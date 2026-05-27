@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dagenham Dock L-System Planting Model</title>
+    <title>Dagenham Dock Pollution-Plant Topology Network</title>
     <style>
 :root {
   color-scheme: dark;
@@ -98,7 +98,7 @@ textarea {
   top: 44px;
   left: 42px;
   z-index: 3;
-  width: min(760px, calc(100vw - 600px));
+  width: min(820px, calc(100vw - 610px));
   color: rgba(255, 250, 240, 0.96);
   text-shadow: 0 12px 34px rgba(0, 0, 0, 0.45);
 }
@@ -138,7 +138,7 @@ textarea {
 .control-panel {
   right: 20px;
   bottom: 18px;
-  width: min(430px, calc(100vw - 40px));
+  width: min(456px, calc(100vw - 40px));
   max-height: calc(100vh - 36px);
   overflow-y: auto;
   padding: 16px;
@@ -153,7 +153,7 @@ textarea {
 
 .analysis-panel {
   top: 32px;
-  right: 470px;
+  right: 496px;
   display: grid;
   width: 318px;
   max-height: calc(100vh - 64px);
@@ -297,6 +297,17 @@ textarea {
   white-space: pre;
 }
 
+.equation-field textarea {
+  min-height: 112px;
+  color: #101525;
+  background:
+    linear-gradient(90deg, rgba(17, 23, 42, 0.05) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(17, 23, 42, 0.05) 1px, transparent 1px),
+    rgba(255, 255, 255, 0.76);
+  background-size: 18px 18px;
+  font-size: 0.76rem;
+}
+
 input[type="range"] {
   width: 100%;
   accent-color: #11172a;
@@ -312,7 +323,7 @@ input[type="range"] {
 }
 
 .toggles {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   margin: 12px 0 2px;
 }
 
@@ -440,11 +451,17 @@ button.primary {
 
 .mini-bar {
   display: grid;
-  grid-template-columns: 58px minmax(0, 1fr) 44px;
+  grid-template-columns: 92px minmax(0, 1fr) 44px;
   align-items: center;
   gap: 7px;
   font-size: 0.68rem;
   font-weight: 800;
+}
+
+.mini-bar > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .mini-bar-track {
@@ -534,7 +551,7 @@ button.primary {
 }
 
 .strategy-strip {
-  right: 810px;
+  right: 836px;
   bottom: 18px;
   left: 32px;
   display: grid;
@@ -583,7 +600,7 @@ button.primary {
   }
 
   .strategy-strip {
-    right: 470px;
+    right: 496px;
   }
 
   .title-block {
@@ -653,21 +670,21 @@ button.primary {
   </head>
   <body>
     <main class="app">
-      <canvas id="scene" aria-label="Dagenham Dock 3D L-System planting model"></canvas>
+      <canvas id="scene" aria-label="Dagenham Dock pollution and planting topology network"></canvas>
 
       <header class="title-block">
-        <p class="eyebrow">Dynamic System Model for Planting</p>
-        <h1 data-i18n="title">Dagenham Dock 场地修复种植 L-System</h1>
+        <p class="eyebrow">Topology-Based Phytoremediation Network</p>
+        <h1 data-i18n="title">Dagenham Dock 污染-植物拓扑网络</h1>
         <p data-i18n="subtitle">
-          由 5m 场地网格、污染风险和修复策略驱动的三维种植空间模型
+          把土壤污染、植物修复、时间衰减、湿度、光照和地形高度计算成节点与边的动态关系
         </p>
       </header>
 
-      <section class="control-panel" aria-label="Site L-System controls">
+      <section class="control-panel" aria-label="Topology network controls">
         <div class="panel-head">
           <div>
-            <p class="eyebrow">L-System Grammar</p>
-            <h2 data-i18n="controls">场地生成控制</h2>
+            <p class="eyebrow">Graph Machine</p>
+            <h2 data-i18n="controls">拓扑网络控制</h2>
           </div>
           <div class="head-tools">
             <div class="lang-toggle" aria-label="Language">
@@ -680,141 +697,163 @@ button.primary {
           </div>
         </div>
 
+        <div class="grid-two">
+          <label class="field">
+            <span data-i18n="scenario">模型场景</span>
+            <select id="preset"></select>
+          </label>
+          <label class="field">
+            <span data-i18n="season">季节</span>
+            <select id="season"></select>
+          </label>
+        </div>
+
         <label class="field">
-          <span data-i18n="scenario">场景</span>
-          <select id="preset"></select>
+          <span data-i18n="strategyFocus">策略焦点</span>
+          <select id="strategyFocus"></select>
         </label>
 
         <div class="grid-two">
           <label class="field">
-            <span data-i18n="strategyFocus">策略焦点</span>
-            <select id="strategyFocus"></select>
+            <span data-i18n="nodeDensity">节点密度</span>
+            <input id="nodeDensity" type="range" min="12" max="100" step="1" />
+            <output id="nodeDensityValue"></output>
           </label>
           <label class="field">
-            <span data-i18n="iterations">迭代</span>
-            <input id="iterations" type="range" min="1" max="4" step="1" />
-            <output id="iterationsValue"></output>
+            <span data-i18n="kLinks">邻接数量</span>
+            <input id="kLinks" type="range" min="2" max="9" step="1" />
+            <output id="kLinksValue"></output>
           </label>
         </div>
 
         <div class="grid-two">
-          <label class="field">
-            <span data-i18n="density">模块密度</span>
-            <input id="blockDensity" type="range" min="10" max="100" step="1" />
-            <output id="blockDensityValue"></output>
-          </label>
           <label class="field">
             <span data-i18n="riskFloor">风险阈值</span>
             <input id="riskFloor" type="range" min="0" max="0.5" step="0.01" />
             <output id="riskFloorValue"></output>
           </label>
-        </div>
-
-        <div class="grid-two">
           <label class="field">
-            <span data-i18n="verticality">竖向生长</span>
-            <input id="verticality" type="range" min="0" max="100" step="1" />
-            <output id="verticalityValue"></output>
-          </label>
-          <label class="field">
-            <span data-i18n="blockScale">种植尺度</span>
-            <input id="blockSize" type="range" min="0.45" max="1.8" step="0.05" />
-            <output id="blockSizeValue"></output>
+            <span data-i18n="timeYears">修复年限</span>
+            <input id="timeYears" type="range" min="0" max="25" step="0.5" />
+            <output id="timeYearsValue"></output>
           </label>
         </div>
 
         <div class="grid-two">
+          <label class="field">
+            <span data-i18n="plantDensity">种植密度</span>
+            <input id="plantDensity" type="range" min="20" max="140" step="1" />
+            <output id="plantDensityValue"></output>
+          </label>
+          <label class="field">
+            <span data-i18n="decayRate">衰减强度</span>
+            <input id="decayRate" type="range" min="0" max="100" step="1" />
+            <output id="decayRateValue"></output>
+          </label>
+        </div>
+
+        <div class="grid-two">
+          <label class="field">
+            <span data-i18n="sunlight">光照时长</span>
+            <input id="sunlight" type="range" min="4" max="16" step="0.5" />
+            <output id="sunlightValue"></output>
+          </label>
+          <label class="field">
+            <span data-i18n="moisture">湿度</span>
+            <input id="moisture" type="range" min="15" max="100" step="1" />
+            <output id="moistureValue"></output>
+          </label>
+        </div>
+
+        <div class="grid-two">
+          <label class="field">
+            <span data-i18n="siphonLift">虹吸竖向</span>
+            <input id="siphonLift" type="range" min="0" max="100" step="1" />
+            <output id="siphonLiftValue"></output>
+          </label>
           <label class="field">
             <span data-i18n="seed">随机种子</span>
             <input id="seed" type="number" min="1" max="99999" step="1" />
           </label>
-          <label class="field">
-            <span data-i18n="angle">转角</span>
-            <input id="angle" type="number" min="8" max="80" step="0.5" />
-          </label>
         </div>
 
         <div class="toggles">
-          <label><input id="showBlocks" type="checkbox" /> <span data-i18n="showModules">种植模块</span></label>
-          <label><input id="showSkeleton" type="checkbox" /> <span data-i18n="showSkeleton">白色骨架</span></label>
-          <label><input id="showSite" type="checkbox" /> <span data-i18n="showSite">策略底图</span></label>
-          <label><input id="showEvidence" type="checkbox" /> <span data-i18n="showEvidence">证据廊道</span></label>
+          <label><input id="showSoil" type="checkbox" /> <span data-i18n="showSoil">土壤面</span></label>
+          <label><input id="showNetwork" type="checkbox" /> <span data-i18n="showNetwork">关系边</span></label>
+          <label><input id="showPlants" type="checkbox" /> <span data-i18n="showPlants">植物节点</span></label>
+          <label><input id="showSiphon" type="checkbox" /> <span data-i18n="showSiphon">虹吸构筑</span></label>
+          <label><input id="showEvidence" type="checkbox" /> <span data-i18n="showEvidence">证据层</span></label>
           <label><input id="autoRotate" type="checkbox" /> <span data-i18n="autoRotate">自动旋转</span></label>
         </div>
 
-        <label class="field text-field">
-          <span data-i18n="axiom">公理</span>
-          <input id="axiom" type="text" />
-        </label>
-
-        <label class="field text-field">
-          <span data-i18n="rules">规则</span>
-          <textarea id="rules" spellcheck="false"></textarea>
+        <label class="field text-field equation-field">
+          <span data-i18n="equation">拓扑公式</span>
+          <textarea id="networkEquation" readonly spellcheck="false"></textarea>
         </label>
 
         <div class="actions">
-          <button id="generate" class="primary" type="button" data-i18n="generate">生成模型</button>
+          <button id="generate" class="primary" type="button" data-i18n="generate">计算网络</button>
           <button id="randomSeed" type="button" data-i18n="newSeed">新种子</button>
           <button id="exportPng" type="button" data-i18n="exportPng">导出 PNG</button>
         </div>
 
         <dl class="stats">
           <div>
-            <dt data-i18n="cells">网格</dt>
-            <dd id="cellCount">0</dd>
+            <dt data-i18n="soilNodes">土壤节点</dt>
+            <dd id="soilNodeCount">0</dd>
           </div>
           <div>
-            <dt data-i18n="modules">模块</dt>
-            <dd id="moduleCount">0</dd>
+            <dt data-i18n="plantNodes">植物节点</dt>
+            <dd id="plantNodeCount">0</dd>
           </div>
           <div>
-            <dt data-i18n="skeleton">骨架</dt>
-            <dd id="segmentCount">0</dd>
+            <dt data-i18n="edges">拓扑边</dt>
+            <dd id="edgeCount">0</dd>
           </div>
           <div>
-            <dt data-i18n="species">物种</dt>
-            <dd id="speciesCount">0</dd>
+            <dt data-i18n="remediation">修复</dt>
+            <dd id="remediationScore">0%</dd>
           </div>
         </dl>
       </section>
 
-      <aside class="analysis-panel" aria-label="Site analysis dashboard">
+      <aside class="analysis-panel" aria-label="Topology analysis dashboard">
         <div class="analysis-card site-card">
           <p class="eyebrow">Dagenham Dock</p>
-          <h2 data-i18n="dataset">场地策略数据</h2>
+          <h2 data-i18n="dataset">场地拓扑数据</h2>
           <div id="siteMeta" class="meta-grid"></div>
         </div>
 
         <div class="analysis-card objective-card">
           <div class="card-title">
-            <span>Objective 1</span>
-            <strong data-i18n="objectiveOne">聚合修复单元</strong>
+            <span>Layer 1</span>
+            <strong data-i18n="objectiveOne">污染迁移网络</strong>
           </div>
           <div id="objectiveOne" class="mini-bars"></div>
         </div>
 
         <div class="analysis-card objective-card">
           <div class="card-title">
-            <span>Objective 2</span>
-            <strong data-i18n="objectiveTwo">贴合水文廊道</strong>
+            <span>Layer 2</span>
+            <strong data-i18n="objectiveTwo">植物反馈投影</strong>
           </div>
           <div id="objectiveTwo" class="mini-map"></div>
         </div>
 
         <div class="analysis-card objective-card">
           <div class="card-title">
-            <span>Objective 3</span>
-            <strong data-i18n="objectiveThree">缩短工程干预</strong>
+            <span>Layer 3</span>
+            <strong data-i18n="objectiveThree">虹吸-衰减系统</strong>
           </div>
-          <svg id="radar" class="radar" viewBox="0 0 180 150" role="img" aria-label="Objective radar"></svg>
+          <svg id="radar" class="radar" viewBox="0 0 180 150" role="img" aria-label="Topology radar"></svg>
         </div>
 
         <div class="analysis-card">
           <div class="card-title">
-            <span>K-Means</span>
-            <strong data-i18n="clusters">策略聚类</strong>
+            <span>Plant Agents</span>
+            <strong data-i18n="plantAgents">植物代理</strong>
           </div>
-          <div id="clusterLegend" class="cluster-legend"></div>
+          <div id="plantLegend" class="cluster-legend"></div>
         </div>
       </aside>
 
@@ -54380,9 +54419,10 @@ const SITE_CENTER = {
   x: (SITE_SUMMARY.bounds.xMin + SITE_SUMMARY.bounds.xMax) / 2,
   y: (SITE_SUMMARY.bounds.yMin + SITE_SUMMARY.bounds.yMax) / 2,
 };
-const MAX_SEGMENTS = 36000;
-const MAX_BLOCKS = 30000;
-const FORWARD = new THREE.Vector3(0, 1, 0);
+const MAX_NODES = 1600;
+const MAX_EDGES = 15000;
+const MAX_SIPHONS = 72;
+const UP = new THREE.Vector3(0, 1, 0);
 
 const STRATEGIES = {
   "P-stab": {
@@ -54392,16 +54432,8 @@ const STRATEGIES = {
     color: "#2d6a4f",
     glow: "#6cf7a3",
     score: "metals",
-    axiom: "S",
-    rules: { S: "F[+S][-S]^F[/S][\\S]B", F: "FF" },
-    angle: 19,
-    step: 0.42,
-    vertical: 0.86,
-    verticalResponse: 0.18,
-    blockChance: 0.76,
-    blockY: 1.55,
-    blockXZ: 0.84,
-    plantKeys: ["miscanthus", "panicum", "betula", "populus", "salix"],
+    vertical: 0.58,
+    plantKeys: ["miscanthus", "panicum", "betula", "populus", "salix", "vetiver"],
   },
   "P-ext": {
     zh: "植物提取",
@@ -54410,16 +54442,8 @@ const STRATEGIES = {
     color: "#74c69d",
     glow: "#a7ffcb",
     score: "metals",
-    axiom: "E",
-    rules: { E: "F[+E][-E]^F[B]", F: "FF" },
-    angle: 24,
-    step: 0.38,
-    vertical: 0.62,
-    verticalResponse: 0.28,
-    blockChance: 0.82,
-    blockY: 1.05,
-    blockXZ: 0.92,
-    plantKeys: ["helianthus", "nicotiana", "cannabis", "linum", "panicum"],
+    vertical: 0.72,
+    plantKeys: ["helianthus", "nicotiana", "cannabis", "linum", "panicum", "zea"],
   },
   "F-myc": {
     zh: "菌丝修复",
@@ -54428,15 +54452,7 @@ const STRATEGIES = {
     color: "#e07a5f",
     glow: "#ff9b84",
     score: "hydrocarbon",
-    axiom: "M",
-    rules: { M: "F[+M][-M][/M][\\M]F", F: "FB" },
-    angle: 31,
-    step: 0.34,
-    vertical: 0.08,
-    verticalResponse: 0.08,
-    blockChance: 0.62,
-    blockY: 0.42,
-    blockXZ: 1.25,
+    vertical: 0.2,
     plantKeys: ["buddleja", "urtica", "festuca", "lolium", "agrostis"],
   },
   "E-cap": {
@@ -54446,15 +54462,7 @@ const STRATEGIES = {
     color: "#9a8c98",
     glow: "#d8c7d6",
     score: "asbestos",
-    axiom: "C",
-    rules: { C: "F+F-C[-F]F[+B]", F: "FF" },
-    angle: 42,
-    step: 0.3,
-    vertical: 0.03,
-    verticalResponse: 0.04,
-    blockChance: 0.48,
-    blockY: 0.3,
-    blockXZ: 1.7,
+    vertical: 0.12,
     plantKeys: ["festuca", "agrostis", "lolium", "miscanthus", "betula"],
   },
   "E-dig": {
@@ -54464,16 +54472,8 @@ const STRATEGIES = {
     color: "#ff5f80",
     glow: "#ffd2dc",
     score: "asbestos",
-    axiom: "D",
-    rules: { D: "F^F[+B][-B][/B][\\B]", F: "F" },
-    angle: 45,
-    step: 0.45,
-    vertical: 0.7,
-    verticalResponse: 0.1,
-    blockChance: 1,
-    blockY: 1.2,
-    blockXZ: 1.05,
-    plantKeys: ["festuca", "agrostis"],
+    vertical: 0.86,
+    plantKeys: ["festuca", "agrostis", "lolium"],
   },
   "W-buf": {
     zh: "湿地缓冲",
@@ -54482,16 +54482,8 @@ const STRATEGIES = {
     color: "#457b9d",
     glow: "#79d7c8",
     score: "water",
-    axiom: "W",
-    rules: { W: "F[+W][-W][/W]F[B]", F: "FF" },
-    angle: 26,
-    step: 0.36,
-    vertical: 0.12,
-    verticalResponse: 0.08,
-    blockChance: 0.72,
-    blockY: 0.74,
-    blockXZ: 1.1,
-    plantKeys: ["salix", "phalaris", "miscanthus", "populus", "panicum"],
+    vertical: 0.34,
+    plantKeys: ["salix", "phalaris", "miscanthus", "populus", "panicum", "arundo"],
   },
   "M-open": {
     zh: "开放监测",
@@ -54500,229 +54492,282 @@ const STRATEGIES = {
     color: "#f4f1de",
     glow: "#fff7c2",
     score: "risk",
-    axiom: "O",
-    rules: { O: "F[+B][-B]", F: "F" },
-    angle: 35,
-    step: 0.25,
-    vertical: 0.02,
-    verticalResponse: 0.02,
-    blockChance: 0.24,
-    blockY: 0.22,
-    blockXZ: 1.2,
-    plantKeys: ["festuca", "lolium", "agrostis"],
+    vertical: 0.08,
+    plantKeys: ["festuca", "lolium", "agrostis", "linum"],
   },
 };
 
 const SCENARIOS = [
   {
-    id: "adaptive",
-    zh: "场地自适应综合模型",
-    en: "Site-adaptive synthesis",
-    strategies: ["W-buf", "F-myc", "E-cap", "P-ext", "P-stab", "E-dig"],
-    axiom: "DAGENHAM_DOCK",
-    iterations: 3,
-    density: 62,
-    verticality: 48,
-    riskFloor: 0.08,
-    blockScale: 1,
-    angle: 28,
-    seed: 2605,
+    id: "topology",
+    zh: "污染-植物拓扑综合网络",
+    en: "Pollution-plant topology network",
+    strategies: ["W-buf", "F-myc", "E-cap", "P-ext", "P-stab", "E-dig", "M-open"],
+    nodeDensity: 72,
+    kLinks: 5,
+    riskFloor: 0.06,
+    timeYears: 7,
+    plantDensity: 92,
+    decayRate: 48,
+    sunlight: 10.5,
+    moisture: 62,
+    siphonLift: 58,
+    seed: 2705,
+    weights: { risk: 1.1, water: 0.82, metals: 0.72, hydrocarbon: 0.78, asbestos: 0.64, gas: 0.42 },
   },
   {
     id: "wetland",
-    zh: "泰晤士水文缓冲带",
-    en: "Thames wetland buffer",
-    strategies: ["W-buf"],
-    axiom: "WATER_EDGE",
-    iterations: 3,
-    density: 76,
-    verticality: 18,
-    riskFloor: 0.05,
-    blockScale: 1.08,
-    angle: 24,
+    zh: "水文缓冲与污染迁移",
+    en: "Hydrological buffer and migration",
+    strategies: ["W-buf", "P-stab", "M-open"],
+    nodeDensity: 78,
+    kLinks: 6,
+    riskFloor: 0.04,
+    timeYears: 9,
+    plantDensity: 106,
+    decayRate: 56,
+    sunlight: 9,
+    moisture: 84,
+    siphonLift: 72,
     seed: 4116,
+    weights: { risk: 0.8, water: 1.55, metals: 0.45, hydrocarbon: 0.4, asbestos: 0.35, gas: 0.36 },
   },
   {
     id: "hydrocarbon",
-    zh: "烃类菌丝网络",
-    en: "Hydrocarbon mycelium network",
-    strategies: ["F-myc"],
-    axiom: "MYCELIUM_FIELD",
-    iterations: 3,
-    density: 82,
-    verticality: 9,
-    riskFloor: 0.08,
-    blockScale: 0.95,
-    angle: 34,
+    zh: "烃类-菌丝降解网络",
+    en: "Hydrocarbon mycelium decay network",
+    strategies: ["F-myc", "W-buf", "E-cap"],
+    nodeDensity: 82,
+    kLinks: 7,
+    riskFloor: 0.07,
+    timeYears: 5,
+    plantDensity: 88,
+    decayRate: 72,
+    sunlight: 8,
+    moisture: 70,
+    siphonLift: 34,
     seed: 1939,
+    weights: { risk: 0.92, water: 0.55, metals: 0.28, hydrocarbon: 1.65, asbestos: 0.5, gas: 0.55 },
   },
   {
     id: "metals",
-    zh: "金属提取与稳定塔丛",
-    en: "Metal extraction and stabilisation towers",
-    strategies: ["P-ext", "P-stab"],
-    axiom: "PHYTO_TOWERS",
-    iterations: 4,
-    density: 70,
-    verticality: 82,
-    riskFloor: 0.1,
-    blockScale: 1.16,
-    angle: 20,
+    zh: "金属提取与根域稳定",
+    en: "Metal uptake and root stabilisation",
+    strategies: ["P-ext", "P-stab", "W-buf"],
+    nodeDensity: 68,
+    kLinks: 4,
+    riskFloor: 0.08,
+    timeYears: 12,
+    plantDensity: 96,
+    decayRate: 42,
+    sunlight: 12.5,
+    moisture: 54,
+    siphonLift: 48,
     seed: 1720,
+    weights: { risk: 1.0, water: 0.48, metals: 1.72, hydrocarbon: 0.34, asbestos: 0.44, gas: 0.24 },
   },
   {
-    id: "containment",
-    zh: "覆盖封存与热点框架",
-    en: "Containment and hotspot frame",
-    strategies: ["E-cap", "E-dig"],
-    axiom: "CAP_FRAME",
-    iterations: 2,
-    density: 58,
-    verticality: 16,
+    id: "siphon",
+    zh: "虹吸式竖向修复构筑",
+    en: "Siphon-driven vertical remediation",
+    strategies: ["W-buf", "E-cap", "E-dig", "P-stab"],
+    nodeDensity: 62,
+    kLinks: 5,
     riskFloor: 0.08,
-    blockScale: 1.28,
-    angle: 42,
+    timeYears: 6,
+    plantDensity: 76,
+    decayRate: 50,
+    sunlight: 9.5,
+    moisture: 74,
+    siphonLift: 96,
     seed: 2005,
+    weights: { risk: 1.25, water: 1.2, metals: 0.65, hydrocarbon: 0.58, asbestos: 1.1, gas: 0.82 },
   },
 ];
 
+const SEASONS = [
+  { id: "spring", zh: "春季萌发", en: "Spring emergence", growth: 0.82, moisture: 0.7, sunlight: 0.62 },
+  { id: "summer", zh: "夏季高光照", en: "Summer high light", growth: 1, moisture: 0.52, sunlight: 1 },
+  { id: "autumn", zh: "秋季收割/回落", en: "Autumn harvest", growth: 0.64, moisture: 0.76, sunlight: 0.48 },
+  { id: "winter", zh: "冬季休眠", en: "Winter dormancy", growth: 0.28, moisture: 0.86, sunlight: 0.24 },
+];
+
 const PLANTS = [
-  ["miscanthus", "Miscanthus x giganteus", "巨芒草", "Giant miscanthus", 3.5, 1.1, "#d7d35a"],
-  ["salix", "Salix spp.", "柳", "Willow coppice", 4, 1.5, "#7ee66e"],
-  ["populus", "Populus spp.", "杨", "Poplar coppice", 8, 1, "#b6e052"],
-  ["phalaris", "Phalaris arundinacea", "虉草", "Reed canary grass", 1.3, 0.8, "#79d7c8"],
-  ["festuca", "Festuca arundinacea", "高羊茅", "Tall fescue", 0.8, 0.45, "#bfeed8"],
-  ["lolium", "Lolium perenne", "多年生黑麦草", "Perennial ryegrass", 0.6, 0.4, "#dfe9ff"],
-  ["agrostis", "Agrostis capillaris", "细弱剪股颖", "Common bent", 0.25, 0.3, "#c9baff"],
-  ["panicum", "Panicum virgatum", "柳枝稷", "Switchgrass", 2, 0.9, "#8be960"],
-  ["helianthus", "Helianthus annuus", "向日葵", "Sunflower", 2.5, 0.5, "#f2da58"],
-  ["zea", "Zea mays", "玉米", "Maize", 2.4, 0.6, "#ffb46e"],
-  ["nicotiana", "Nicotiana tabacum", "烟草", "Tobacco", 1.5, 0.5, "#ff73a9"],
-  ["cannabis", "Cannabis sativa", "工业大麻", "Industrial hemp", 2.8, 0.45, "#a46af3"],
-  ["linum", "Linum usitatissimum", "亚麻", "Flax", 0.9, 0.35, "#f59ad4"],
-  ["buddleja", "Buddleja davidii", "醉鱼草", "Butterfly bush", 3, 3, "#ff8c7d"],
-  ["betula", "Betula pendula", "垂枝桦", "Silver birch", 18, 6, "#a7e9e7"],
-  ["acer", "Acer pseudoplatanus", "欧洲槭", "Sycamore maple", 25, 10, "#bfc7a2"],
-  ["urtica", "Urtica dioica", "荨麻", "Nettle", 1.5, 0.6, "#59d982"],
-  ["vetiver", "Chrysopogon zizanioides", "香根草", "Vetiver", 1.6, 0.7, "#82f0c6"],
-  ["arundo", "Arundo donax", "巨芦", "Giant reed", 4.5, 1.6, "#c8d56a"],
-].map(([key, latin, cn, en, height, footprint, color]) => ({ key, latin, cn, en, height, footprint, color }));
+  ["miscanthus", "Miscanthus x giganteus", "巨芒草", "Giant miscanthus", 3.5, 1.1, "#d7d35a", 3, 0.55, 0.44, 0.45, 0.7, 0.62],
+  ["salix", "Salix spp.", "柳", "Willow coppice", 4, 1.5, "#7ee66e", 2, 0.62, 0.58, 0.9, 0.52, 0.82],
+  ["populus", "Populus spp.", "杨", "Poplar coppice", 8, 2.4, "#b6e052", 3, 0.68, 0.42, 0.72, 0.5, 0.7],
+  ["phalaris", "Phalaris arundinacea", "虉草", "Reed canary grass", 1.3, 0.8, "#79d7c8", 1.5, 0.34, 0.32, 0.86, 0.74, 0.54],
+  ["festuca", "Festuca arundinacea", "高羊茅", "Tall fescue", 0.8, 0.45, "#bfeed8", 1, 0.24, 0.28, 0.38, 0.85, 0.48],
+  ["lolium", "Lolium perenne", "多年生黑麦草", "Perennial ryegrass", 0.6, 0.4, "#dfe9ff", 0.75, 0.2, 0.24, 0.32, 0.78, 0.34],
+  ["agrostis", "Agrostis capillaris", "细弱剪股颖", "Common bent", 0.25, 0.3, "#c9baff", 1, 0.18, 0.18, 0.28, 0.92, 0.36],
+  ["panicum", "Panicum virgatum", "柳枝稷", "Switchgrass", 2, 0.9, "#8be960", 2, 0.42, 0.38, 0.45, 0.72, 0.58],
+  ["helianthus", "Helianthus annuus", "向日葵", "Sunflower", 2.5, 0.5, "#f2da58", 0.5, 0.92, 0.22, 0.24, 0.38, 0.32],
+  ["zea", "Zea mays", "玉米", "Maize", 2.4, 0.6, "#ffb46e", 0.6, 0.48, 0.24, 0.28, 0.36, 0.3],
+  ["nicotiana", "Nicotiana tabacum", "烟草", "Tobacco", 1.5, 0.5, "#ff73a9", 0.4, 0.96, 0.18, 0.2, 0.3, 0.22],
+  ["cannabis", "Cannabis sativa", "工业大麻", "Industrial hemp", 2.8, 0.45, "#a46af3", 0.5, 0.66, 0.34, 0.32, 0.46, 0.4],
+  ["linum", "Linum usitatissimum", "亚麻", "Flax", 0.9, 0.35, "#f59ad4", 0.35, 0.45, 0.2, 0.2, 0.34, 0.26],
+  ["buddleja", "Buddleja davidii", "醉鱼草", "Butterfly bush", 3, 2.8, "#ff8c7d", 2.5, 0.38, 0.72, 0.28, 0.68, 0.36],
+  ["betula", "Betula pendula", "垂枝桦", "Silver birch", 18, 6, "#a7e9e7", 7, 0.44, 0.3, 0.44, 0.64, 0.46],
+  ["acer", "Acer pseudoplatanus", "欧洲槭", "Sycamore maple", 25, 10, "#bfc7a2", 9, 0.32, 0.24, 0.36, 0.58, 0.34],
+  ["urtica", "Urtica dioica", "荨麻", "Nettle", 1.5, 0.6, "#59d982", 1.4, 0.28, 0.48, 0.34, 0.52, 0.4],
+  ["vetiver", "Chrysopogon zizanioides", "香根草", "Vetiver", 1.6, 1, "#82f0c6", 2, 0.4, 0.36, 0.82, 0.94, 0.72],
+  ["arundo", "Arundo donax", "巨芦", "Giant reed", 4.5, 1.6, "#c8d56a", 2, 0.35, 0.42, 0.72, 0.58, 0.66],
+].map(([key, latin, cn, en, height, footprint, color, cycle, metal, hydrocarbon, water, stability, root]) => ({
+  key,
+  latin,
+  cn,
+  en,
+  height,
+  footprint,
+  color,
+  cycle,
+  metal,
+  hydrocarbon,
+  water,
+  stability,
+  root,
+}));
 
 const I18N = {
   zh: {
-    title: "Dagenham Dock 场地修复种植 L-System",
-    subtitle: "由 5m 场地网格、污染风险和修复策略驱动的三维种植空间模型",
-    controls: "场地生成控制",
-    scenario: "场景",
+    title: "Dagenham Dock 污染-植物拓扑网络",
+    subtitle: "把土壤污染、植物修复、时间衰减、湿度、光照和地形高度计算成节点与边的动态关系。",
+    controls: "拓扑网络控制",
+    scenario: "模型场景",
+    season: "季节",
     strategyFocus: "策略焦点",
-    iterations: "迭代",
-    density: "模块密度",
+    nodeDensity: "节点密度",
+    kLinks: "邻接数量",
     riskFloor: "风险阈值",
-    verticality: "竖向生长",
-    blockScale: "种植尺度",
+    timeYears: "修复年限",
+    plantDensity: "种植密度",
+    decayRate: "衰减强度",
+    sunlight: "光照时长",
+    moisture: "湿度",
+    siphonLift: "虹吸竖向",
     seed: "随机种子",
-    angle: "转角",
-    showModules: "种植模块",
-    showSkeleton: "白色骨架",
-    showSite: "策略底图",
-    showEvidence: "证据廊道",
+    showSoil: "土壤面",
+    showNetwork: "关系边",
+    showPlants: "植物节点",
+    showSiphon: "虹吸构筑",
+    showEvidence: "证据层",
     autoRotate: "自动旋转",
-    axiom: "公理",
-    rules: "规则",
-    generate: "生成模型",
+    equation: "拓扑公式",
+    generate: "计算网络",
     newSeed: "新种子",
     exportPng: "导出 PNG",
-    cells: "网格",
-    modules: "模块",
-    skeleton: "骨架",
-    species: "物种",
-    dataset: "场地策略数据",
-    objectiveOne: "聚合修复单元",
-    objectiveTwo: "贴合水文廊道",
-    objectiveThree: "缩短工程干预",
-    clusters: "策略聚类",
+    soilNodes: "土壤节点",
+    plantNodes: "植物节点",
+    edges: "拓扑边",
+    remediation: "修复",
+    dataset: "场地拓扑数据",
+    objectiveOne: "污染迁移网络",
+    objectiveTwo: "植物反馈投影",
+    objectiveThree: "虹吸-衰减系统",
+    plantAgents: "植物代理",
     allStrategies: "全部策略",
     resetCamera: "重置视角",
-    generation: (iterations, seed, truncated) => `Gen: ${iterations} Ind:${seed}${truncated ? " / 截断" : ""}`,
     hectare: "公顷",
+    years: "年",
+    hours: "小时",
+    generation: (k, seed) => `k=${k} Seed:${seed}`,
+    equationText:
+      "Edge W(i,j)=e^(-d/lambda)*(C污染相似 + H水文流向 + S策略相容 + E证据重叠)\nPlant P(t)=P0*(1 - uptake(物种, 季节, 密度, 光照, 湿度, 年限))\nSiphon Z=hotspot(水分+气体+风险)*竖向强度，把地下关系投射成立体构筑。",
   },
   en: {
-    title: "Dagenham Dock Remediation Planting L-System",
-    subtitle: "A 3D planting-space model driven by 5m site cells, risk scores, and remediation strategies.",
-    controls: "Site Generation Controls",
-    scenario: "Scenario",
+    title: "Dagenham Dock Pollution-Plant Topology Network",
+    subtitle:
+      "A dynamic node-edge model for soil pollution, planting feedback, time decay, moisture, sunlight, and terrain height.",
+    controls: "Topology Network Controls",
+    scenario: "Model Scenario",
+    season: "Season",
     strategyFocus: "Strategy",
-    iterations: "Iterations",
-    density: "Module Density",
+    nodeDensity: "Node Density",
+    kLinks: "K Links",
     riskFloor: "Risk Floor",
-    verticality: "Vertical Growth",
-    blockScale: "Planting Scale",
+    timeYears: "Time",
+    plantDensity: "Planting Density",
+    decayRate: "Decay Strength",
+    sunlight: "Sunlight",
+    moisture: "Moisture",
+    siphonLift: "Siphon Lift",
     seed: "Seed",
-    angle: "Angle",
-    showModules: "Modules",
-    showSkeleton: "Skeleton",
-    showSite: "Strategy Map",
+    showSoil: "Soil Surface",
+    showNetwork: "Edges",
+    showPlants: "Plant Nodes",
+    showSiphon: "Siphon",
     showEvidence: "Evidence",
     autoRotate: "Auto Rotate",
-    axiom: "Axiom",
-    rules: "Rules",
-    generate: "Generate",
+    equation: "Topology Equation",
+    generate: "Compute Network",
     newSeed: "New Seed",
     exportPng: "Export PNG",
-    cells: "Cells",
-    modules: "Modules",
-    skeleton: "Skeleton",
-    species: "Species",
-    dataset: "Strategy Dataset",
-    objectiveOne: "Aggregate Units",
-    objectiveTwo: "Fit Water Corridors",
-    objectiveThree: "Shorten Intervention",
-    clusters: "Strategy Clusters",
-    allStrategies: "All strategies",
+    soilNodes: "Soil Nodes",
+    plantNodes: "Plant Nodes",
+    edges: "Edges",
+    remediation: "Remed.",
+    dataset: "Site Topology Data",
+    objectiveOne: "Pollution Migration",
+    objectiveTwo: "Plant Feedback Projection",
+    objectiveThree: "Siphon-Decay System",
+    plantAgents: "Plant Agents",
+    allStrategies: "All Strategies",
     resetCamera: "Reset camera",
-    generation: (iterations, seed, truncated) => `Gen: ${iterations} Ind:${seed}${truncated ? " / truncated" : ""}`,
     hectare: "ha",
+    years: "yr",
+    hours: "hr",
+    generation: (k, seed) => `k=${k} Seed:${seed}`,
+    equationText:
+      "Edge W(i,j)=e^(-d/lambda)*(C pollution similarity + H hydrological flow + S strategy affinity + E evidence overlap)\nPlant P(t)=P0*(1 - uptake(species, season, density, sunlight, moisture, years))\nSiphon Z=hotspot(water+gas+risk)*vertical lift, projecting underground relations into structure.",
   },
 };
 
 const els = {
   canvas: document.querySelector("#scene"),
   preset: document.querySelector("#preset"),
+  season: document.querySelector("#season"),
   strategyFocus: document.querySelector("#strategyFocus"),
-  iterations: document.querySelector("#iterations"),
-  iterationsValue: document.querySelector("#iterationsValue"),
-  blockDensity: document.querySelector("#blockDensity"),
-  blockDensityValue: document.querySelector("#blockDensityValue"),
+  nodeDensity: document.querySelector("#nodeDensity"),
+  nodeDensityValue: document.querySelector("#nodeDensityValue"),
+  kLinks: document.querySelector("#kLinks"),
+  kLinksValue: document.querySelector("#kLinksValue"),
   riskFloor: document.querySelector("#riskFloor"),
   riskFloorValue: document.querySelector("#riskFloorValue"),
-  verticality: document.querySelector("#verticality"),
-  verticalityValue: document.querySelector("#verticalityValue"),
-  blockSize: document.querySelector("#blockSize"),
-  blockSizeValue: document.querySelector("#blockSizeValue"),
+  timeYears: document.querySelector("#timeYears"),
+  timeYearsValue: document.querySelector("#timeYearsValue"),
+  plantDensity: document.querySelector("#plantDensity"),
+  plantDensityValue: document.querySelector("#plantDensityValue"),
+  decayRate: document.querySelector("#decayRate"),
+  decayRateValue: document.querySelector("#decayRateValue"),
+  sunlight: document.querySelector("#sunlight"),
+  sunlightValue: document.querySelector("#sunlightValue"),
+  moisture: document.querySelector("#moisture"),
+  moistureValue: document.querySelector("#moistureValue"),
+  siphonLift: document.querySelector("#siphonLift"),
+  siphonLiftValue: document.querySelector("#siphonLiftValue"),
   seed: document.querySelector("#seed"),
-  angle: document.querySelector("#angle"),
   langZh: document.querySelector("#langZh"),
   langEn: document.querySelector("#langEn"),
-  showBlocks: document.querySelector("#showBlocks"),
-  showSkeleton: document.querySelector("#showSkeleton"),
-  showSite: document.querySelector("#showSite"),
+  showSoil: document.querySelector("#showSoil"),
+  showNetwork: document.querySelector("#showNetwork"),
+  showPlants: document.querySelector("#showPlants"),
+  showSiphon: document.querySelector("#showSiphon"),
   showEvidence: document.querySelector("#showEvidence"),
   autoRotate: document.querySelector("#autoRotate"),
-  axiom: document.querySelector("#axiom"),
-  rules: document.querySelector("#rules"),
+  networkEquation: document.querySelector("#networkEquation"),
   generate: document.querySelector("#generate"),
   randomSeed: document.querySelector("#randomSeed"),
   cameraReset: document.querySelector("#cameraReset"),
   exportPng: document.querySelector("#exportPng"),
-  cellCount: document.querySelector("#cellCount"),
-  moduleCount: document.querySelector("#moduleCount"),
-  segmentCount: document.querySelector("#segmentCount"),
-  speciesCount: document.querySelector("#speciesCount"),
+  soilNodeCount: document.querySelector("#soilNodeCount"),
+  plantNodeCount: document.querySelector("#plantNodeCount"),
+  edgeCount: document.querySelector("#edgeCount"),
+  remediationScore: document.querySelector("#remediationScore"),
   siteMeta: document.querySelector("#siteMeta"),
   objectiveOne: document.querySelector("#objectiveOne"),
   objectiveTwo: document.querySelector("#objectiveTwo"),
   radar: document.querySelector("#radar"),
-  clusterLegend: document.querySelector("#clusterLegend"),
+  plantLegend: document.querySelector("#plantLegend"),
   strategyLegend: document.querySelector("#strategyLegend"),
   hudScenario: document.querySelector("#hudScenario"),
   hudGeneration: document.querySelector("#hudGeneration"),
@@ -54732,17 +54777,24 @@ const els = {
 let language = "zh";
 let activeScenario = SCENARIOS[0];
 let allCells = [];
-let selectedCells = [];
-let lastStats = { cells: 0, modules: 0, segments: 0, species: 0, truncated: false };
-let lastPlantCounts = Object.fromEntries(PLANTS.map((plant) => [plant.key, 0]));
+let selectedNodes = [];
+let lastModel = {
+  nodes: [],
+  edges: [],
+  siphons: [],
+  plantCounts: {},
+  averageRemediation: 0,
+  averageWeight: 0,
+  weightedRisk: 0,
+};
 let generateTimer = null;
 let pointerState = null;
-let rotationTarget = { x: -0.86, y: -0.32 };
+let rotationTarget = { x: -0.9, y: -0.38 };
 let zoomTarget = 76;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color("#03092a");
-scene.fog = new THREE.Fog("#03092a", 78, 168);
+scene.fog = new THREE.Fog("#03092a", 78, 172);
 
 const camera = new THREE.PerspectiveCamera(44, window.innerWidth / window.innerHeight, 0.1, 500);
 camera.position.set(0, 18, zoomTarget);
@@ -54756,34 +54808,33 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-const ambient = new THREE.HemisphereLight("#fff7d0", "#21345f", 2.15);
-scene.add(ambient);
+scene.add(new THREE.HemisphereLight("#fff7d0", "#1f315f", 2.05));
 
-const keyLight = new THREE.DirectionalLight("#fff4cf", 2.45);
-keyLight.position.set(16, 22, 18);
+const keyLight = new THREE.DirectionalLight("#fff4cf", 2.35);
+keyLight.position.set(18, 24, 18);
 scene.add(keyLight);
 
-const cyanLight = new THREE.DirectionalLight("#65f8ff", 1.15);
-cyanLight.position.set(-20, 8, 16);
+const cyanLight = new THREE.DirectionalLight("#65f8ff", 1.18);
+cyanLight.position.set(-24, 10, 16);
 scene.add(cyanLight);
 
 const world = new THREE.Group();
 scene.add(world);
 
-let siteGroup = new THREE.Group();
+let soilGroup = new THREE.Group();
 let evidenceGroup = new THREE.Group();
-let modelGroup = new THREE.Group();
-let skeletonMesh = null;
-let blockGroup = new THREE.Group();
+let networkGroup = new THREE.Group();
+let plantGroup = new THREE.Group();
+let siphonGroup = new THREE.Group();
 
-world.add(siteGroup, evidenceGroup, modelGroup);
+world.add(soilGroup, evidenceGroup, networkGroup, plantGroup, siphonGroup);
 
 init();
 
 function init() {
   allCells = SITE_CELLS.map(hydrateCell);
   populateSelects();
-  buildSiteBase();
+  buildSoilSurface();
   buildEvidenceLayer();
   bindEvents();
   applyScenario(SCENARIOS[0]);
@@ -54799,11 +54850,18 @@ function hydrateCell(row, index) {
   const riskClass = RISK_KEYS[row[CELL.riskClass]];
   const x = (row[CELL.x] - SITE_CENTER.x) / WORLD_SCALE;
   const z = -(row[CELL.y] - SITE_CENTER.y) / WORLD_SCALE;
+  const noise = fract(Math.sin(row[CELL.x] * 0.071 + row[CELL.y] * 0.117) * 173.41);
+  const terrain = THREE.MathUtils.clamp(
+    -0.18 + row[CELL.water] * 0.42 + row[CELL.risk] * 0.36 + row[CELL.gas] * 0.24 + noise * 0.18,
+    -0.16,
+    0.82,
+  );
 
   return {
     index,
     x,
     z,
+    y: terrain,
     siteX: row[CELL.x],
     siteY: row[CELL.y],
     totalRisk: row[CELL.risk],
@@ -54828,6 +54886,12 @@ function populateSelects() {
     els.preset.append(option);
   });
 
+  SEASONS.forEach((season) => {
+    const option = document.createElement("option");
+    option.value = season.id;
+    els.season.append(option);
+  });
+
   const allOption = document.createElement("option");
   allOption.value = "all";
   els.strategyFocus.append(allOption);
@@ -54847,18 +54911,29 @@ function bindEvents() {
   });
 
   els.strategyFocus.addEventListener("change", scheduleGenerate);
+  els.season.addEventListener("change", scheduleGenerate);
   els.langZh.addEventListener("click", () => setLanguage("zh"));
   els.langEn.addEventListener("click", () => setLanguage("en"));
 
-  [els.iterations, els.blockDensity, els.riskFloor, els.verticality, els.blockSize].forEach((input) => {
+  [
+    els.nodeDensity,
+    els.kLinks,
+    els.riskFloor,
+    els.timeYears,
+    els.plantDensity,
+    els.decayRate,
+    els.sunlight,
+    els.moisture,
+    els.siphonLift,
+  ].forEach((input) => {
     input.addEventListener("input", () => {
       syncOutputs();
       scheduleGenerate();
     });
   });
 
-  [els.seed, els.angle, els.axiom, els.rules].forEach((input) => input.addEventListener("change", scheduleGenerate));
-  [els.showBlocks, els.showSkeleton, els.showSite, els.showEvidence].forEach((input) =>
+  els.seed.addEventListener("change", scheduleGenerate);
+  [els.showSoil, els.showNetwork, els.showPlants, els.showSiphon, els.showEvidence].forEach((input) =>
     input.addEventListener("change", updateVisibility),
   );
 
@@ -54882,37 +54957,25 @@ function bindEvents() {
 function applyScenario(scenario) {
   activeScenario = scenario;
   els.preset.value = scenario.id;
-  els.iterations.value = scenario.iterations;
-  els.blockDensity.value = scenario.density;
+  els.season.value = scenario.id === "wetland" ? "autumn" : scenario.id === "metals" ? "summer" : "spring";
+  els.nodeDensity.value = scenario.nodeDensity;
+  els.kLinks.value = scenario.kLinks;
   els.riskFloor.value = scenario.riskFloor;
-  els.verticality.value = scenario.verticality;
-  els.blockSize.value = scenario.blockScale;
+  els.timeYears.value = scenario.timeYears;
+  els.plantDensity.value = scenario.plantDensity;
+  els.decayRate.value = scenario.decayRate;
+  els.sunlight.value = scenario.sunlight;
+  els.moisture.value = scenario.moisture;
+  els.siphonLift.value = scenario.siphonLift;
   els.seed.value = scenario.seed;
-  els.angle.value = scenario.angle;
   els.strategyFocus.value = "all";
-  els.showBlocks.checked = true;
-  els.showSkeleton.checked = true;
-  els.showSite.checked = true;
+  els.showSoil.checked = true;
+  els.showNetwork.checked = true;
+  els.showPlants.checked = true;
+  els.showSiphon.checked = true;
   els.showEvidence.checked = true;
   els.autoRotate.checked = false;
-  updateGrammarFields();
   syncOutputs();
-}
-
-function updateGrammarFields() {
-  els.axiom.value = activeScenario.axiom;
-  els.rules.value = buildRuleText(activeScenario);
-}
-
-function buildRuleText(scenario) {
-  const lines = [`${scenario.axiom} -> ${scenario.strategies.join(" + ")}`];
-  scenario.strategies.forEach((key) => {
-    const config = STRATEGIES[key];
-    Object.entries(config.rules).forEach(([symbol, replacement]) => {
-      lines.push(`${symbol}(${config.short}) -> ${replacement}`);
-    });
-  });
-  return lines.join("\n");
 }
 
 function setLanguage(nextLanguage) {
@@ -54937,6 +55000,7 @@ function applyLanguage() {
   });
   els.langZh.classList.toggle("active", language === "zh");
   els.langEn.classList.toggle("active", language === "en");
+  els.networkEquation.value = t.equationText;
   refreshSelectLabels();
   renderStaticDashboard();
   renderStrategyLegend();
@@ -54948,35 +55012,47 @@ function refreshSelectLabels() {
     option.textContent = scenario ? label(scenario) : option.value;
   });
 
+  Array.from(els.season.options).forEach((option) => {
+    const season = SEASONS.find((item) => item.id === option.value);
+    option.textContent = season ? label(season) : option.value;
+  });
+
   Array.from(els.strategyFocus.options).forEach((option) => {
-    option.textContent =
-      option.value === "all" ? I18N[language].allStrategies : strategyName(option.value);
+    option.textContent = option.value === "all" ? I18N[language].allStrategies : strategyName(option.value);
   });
 }
 
 function syncOutputs() {
-  els.iterationsValue.textContent = els.iterations.value;
-  els.blockDensityValue.textContent = `${els.blockDensity.value}%`;
+  els.nodeDensityValue.textContent = `${els.nodeDensity.value}%`;
+  els.kLinksValue.textContent = els.kLinks.value;
   els.riskFloorValue.textContent = Number(els.riskFloor.value).toFixed(2);
-  els.verticalityValue.textContent = `${els.verticality.value}%`;
-  els.blockSizeValue.textContent = `${Number(els.blockSize.value).toFixed(2)}x`;
+  els.timeYearsValue.textContent = `${Number(els.timeYears.value).toFixed(1)} ${I18N[language].years}`;
+  els.plantDensityValue.textContent = `${els.plantDensity.value}%`;
+  els.decayRateValue.textContent = `${els.decayRate.value}%`;
+  els.sunlightValue.textContent = `${Number(els.sunlight.value).toFixed(1)} ${I18N[language].hours}`;
+  els.moistureValue.textContent = `${els.moisture.value}%`;
+  els.siphonLiftValue.textContent = `${els.siphonLift.value}%`;
 }
 
 function scheduleGenerate() {
   window.clearTimeout(generateTimer);
-  generateTimer = window.setTimeout(generate, 160);
+  generateTimer = window.setTimeout(generate, 150);
 }
 
 function readSettings() {
   return {
-    iterations: Number(els.iterations.value),
-    density: Number(els.blockDensity.value) / 100,
+    nodeDensity: Number(els.nodeDensity.value) / 100,
+    kLinks: Number(els.kLinks.value),
     riskFloor: Number(els.riskFloor.value),
-    verticality: Number(els.verticality.value) / 100,
-    blockScale: Number(els.blockSize.value),
-    angle: THREE.MathUtils.degToRad(Number(els.angle.value) || activeScenario.angle),
+    timeYears: Number(els.timeYears.value),
+    plantDensity: Number(els.plantDensity.value) / 100,
+    decayRate: Number(els.decayRate.value) / 100,
+    sunlight: Number(els.sunlight.value),
+    moisture: Number(els.moisture.value) / 100,
+    siphonLift: Number(els.siphonLift.value) / 100,
     seed: Number(els.seed.value) || activeScenario.seed,
     strategyFocus: els.strategyFocus.value,
+    season: SEASONS.find((item) => item.id === els.season.value) || SEASONS[0],
   };
 }
 
@@ -54984,9 +55060,16 @@ function generate() {
   syncOutputs();
   const settings = readSettings();
   const candidates = filteredCells(settings);
-  const target = Math.round(THREE.MathUtils.lerp(120, 980, settings.density) * densityMultiplier(settings));
-  selectedCells = chooseCells(candidates, target, settings.seed);
-  const model = buildPlantingModel(selectedCells, settings);
+  const scenarioMultiplier = activeScenario.id === "topology" ? 1 : 0.88;
+  const target = Math.min(
+    MAX_NODES,
+    Math.round(THREE.MathUtils.lerp(220, MAX_NODES, settings.nodeDensity) * scenarioMultiplier),
+  );
+  const cells = chooseCells(candidates, target, settings);
+  const nodes = cells.map((cell, index) => createTopologyNode(cell, index, settings));
+  const edges = buildEdges(nodes, settings);
+  const siphons = buildSiphons(nodes, edges, settings);
+  const model = summarizeModel(nodes, edges, siphons);
   rebuildModel(model);
   updateStats();
   updateVisibility();
@@ -54997,216 +55080,292 @@ function filteredCells(settings) {
     settings.strategyFocus === "all" ? new Set(activeScenario.strategies) : new Set([settings.strategyFocus]);
   return allCells.filter((cell) => {
     if (!allowed.has(cell.strategy)) return false;
-    if (cell.strategy === "E-dig" || cell.strategy === "P-stab") return true;
+    if (cell.strategy === "E-dig" || cell.strategy === "P-stab") return cell.totalRisk >= settings.riskFloor * 0.55;
     return cell.totalRisk >= settings.riskFloor;
   });
 }
 
-function densityMultiplier(settings) {
-  const focus = settings.strategyFocus;
-  if (focus !== "all") return focus === "P-stab" || focus === "E-dig" ? 0.55 : 0.75;
-  if (activeScenario.id === "adaptive") return 1;
-  if (activeScenario.id === "metals") return 0.74;
-  if (activeScenario.id === "containment") return 0.82;
-  return 0.92;
-}
-
-function chooseCells(cells, target, seed) {
-  const random = mulberry32(seed);
+function chooseCells(cells, target, settings) {
+  const random = mulberry32(settings.seed);
   return cells
     .map((cell) => ({
       cell,
-      score: cellScore(cell) + random() * 0.18 + localContrast(cell) * 0.12,
+      score: cellScore(cell, settings) + random() * 0.16 + localContrast(cell) * 0.08,
     }))
     .sort((a, b) => b.score - a.score)
     .slice(0, Math.min(cells.length, target))
     .map((item) => item.cell);
 }
 
-function cellScore(cell) {
+function cellScore(cell, settings) {
+  const weights = activeScenario.weights;
   const strategy = STRATEGIES[cell.strategy];
-  const component = cell[strategy.score] ?? cell.totalRisk;
-  return component * 1.45 + cell.totalRisk * 0.85 + cell.confidence * 0.24;
+  const primary = strategy.score === "risk" ? cell.totalRisk : cell[strategy.score];
+  const seasonWaterFit = 1 - Math.abs(cell.water - settings.moisture);
+  return (
+    cell.totalRisk * weights.risk +
+    cell.hydrocarbon * weights.hydrocarbon +
+    cell.metals * weights.metals +
+    cell.asbestos * weights.asbestos +
+    cell.water * weights.water +
+    cell.gas * weights.gas +
+    primary * 0.7 +
+    seasonWaterFit * 0.12 +
+    cell.confidence * 0.2
+  );
 }
 
-function localContrast(cell) {
-  return fract(Math.sin(cell.siteX * 12.9898 + cell.siteY * 78.233) * 43758.5453);
-}
-
-function buildPlantingModel(cells, settings) {
-  const segments = [];
-  const blocks = [];
-  const plantCounts = Object.fromEntries(PLANTS.map((plant) => [plant.key, 0]));
-  let truncated = false;
-
-  cells.forEach((cell, cellIndex) => {
-    if (truncated) return;
-    const config = STRATEGIES[cell.strategy];
-    const random = mulberry32(settings.seed + cell.index * 31 + cellIndex * 17);
-    const grammar = rulesForStrategy(config, settings);
-    const tokens = expandSystem(config.axiom, grammar, settings.iterations, 1600);
-    const baseAngle = settings.angle || THREE.MathUtils.degToRad(config.angle);
-    const yaw = random() * Math.PI * 2;
-    const baseVertical = THREE.MathUtils.clamp(
-      config.vertical + settings.verticality * config.verticalResponse,
-      0.02,
-      0.98,
-    );
-    const horizontal = Math.sqrt(Math.max(0, 1 - baseVertical * baseVertical));
-    const baseForward = new THREE.Vector3(
-      Math.cos(yaw) * horizontal,
-      baseVertical,
-      Math.sin(yaw) * horizontal,
-    ).normalize();
-    const quat = new THREE.Quaternion().setFromUnitVectors(FORWARD, baseForward);
-    const state = {
-      pos: new THREE.Vector3(cell.x, 0.08 + cell.totalRisk * 0.32, cell.z),
-      quat,
-      step: config.step * settings.blockScale * (0.72 + cell.totalRisk * 0.9),
-      depth: 0,
-    };
-    const stack = [];
-
-    for (const token of tokens) {
-      if (segments.length >= MAX_SEGMENTS || blocks.length >= MAX_BLOCKS) {
-        truncated = true;
-        break;
-      }
-
-      if (token === "F" || token === "B") {
-        const start = state.pos.clone();
-        const dir = FORWARD.clone().applyQuaternion(state.quat).normalize();
-        const lift = token === "B" ? 0.08 : 0;
-        const end = start
-          .clone()
-          .add(dir.multiplyScalar(state.step * (0.72 + random() * 0.42)))
-          .add(new THREE.Vector3(0, lift, 0));
-        segments.push({ start, end, strategy: cell.strategy, risk: cell.totalRisk });
-        state.pos.copy(end);
-
-        const chance = token === "B" ? 1 : config.blockChance * (0.55 + cell.totalRisk);
-        if (random() < chance) {
-          const plant = choosePlant(config, cell, random);
-          plantCounts[plant.key] += 1;
-          blocks.push({
-            pos: end.clone(),
-            quat: state.quat.clone().multiply(new THREE.Quaternion().setFromAxisAngle(FORWARD, random() * Math.PI)),
-            strategy: cell.strategy,
-            plant,
-            risk: cell.totalRisk,
-            scale: 0.8 + random() * 0.45,
-          });
-        }
-      } else if (token === "+") {
-        rotateLocal(state.quat, new THREE.Vector3(0, 0, 1), baseAngle * (0.75 + random() * 0.5));
-      } else if (token === "-") {
-        rotateLocal(state.quat, new THREE.Vector3(0, 0, 1), -baseAngle * (0.75 + random() * 0.5));
-      } else if (token === "^") {
-        rotateLocal(state.quat, new THREE.Vector3(1, 0, 0), baseAngle * 0.75);
-      } else if (token === "&") {
-        rotateLocal(state.quat, new THREE.Vector3(1, 0, 0), -baseAngle * 0.75);
-      } else if (token === "/") {
-        rotateLocal(state.quat, new THREE.Vector3(0, 1, 0), baseAngle * 0.85);
-      } else if (token === "\\") {
-        rotateLocal(state.quat, new THREE.Vector3(0, 1, 0), -baseAngle * 0.85);
-      } else if (token === "[") {
-        stack.push({
-          pos: state.pos.clone(),
-          quat: state.quat.clone(),
-          step: state.step * 0.9,
-          depth: state.depth + 1,
-        });
-      } else if (token === "]" && stack.length) {
-        const previous = stack.pop();
-        state.pos.copy(previous.pos);
-        state.quat.copy(previous.quat);
-        state.step = previous.step;
-        state.depth = previous.depth;
-      }
-    }
-  });
-
-  return { segments, blocks, plantCounts, truncated };
-}
-
-function rulesForStrategy(config, settings) {
-  const parsed = parseRuleTextarea(els.rules.value);
-  const hasStrategyOverride = Object.keys(parsed).some((key) => key.includes(config.short));
-  if (!hasStrategyOverride) return config.rules;
-
-  const merged = { ...config.rules };
-  Object.entries(parsed).forEach(([key, value]) => {
-    const match = key.match(/^([A-Z])\(([^)]+)\)$/);
-    if (match && match[2] === config.short) merged[match[1]] = value;
-  });
-  return merged;
-}
-
-function parseRuleTextarea(text) {
-  const rules = {};
-  text.split(/\r?\n/).forEach((line) => {
-    const [left, right] = line.split("->").map((part) => part?.trim());
-    if (left && right) rules[left] = right.replace(/\s+/g, "");
-  });
-  return rules;
-}
-
-function expandSystem(axiom, rules, iterations, maxTokens) {
-  let value = axiom;
-  for (let i = 0; i < iterations; i += 1) {
-    let next = "";
-    for (const token of value) {
-      next += rules[token] || token;
-      if (next.length > maxTokens) return next.slice(0, maxTokens);
-    }
-    value = next;
-  }
-  return value;
-}
-
-function choosePlant(config, cell, random) {
-  const keys = config.plantKeys;
-  const riskBias = Math.floor(cell.totalRisk * keys.length * 1.8);
-  const index = (riskBias + Math.floor(random() * keys.length)) % keys.length;
-  return PLANTS.find((plant) => plant.key === keys[index]) || PLANTS[0];
-}
-
-function rotateLocal(quat, axis, angle) {
-  const localAxis = axis.clone().applyQuaternion(quat).normalize();
-  quat.premultiply(new THREE.Quaternion().setFromAxisAngle(localAxis, angle));
-}
-
-function rebuildModel(model) {
-  disposeGroup(modelGroup);
-  world.remove(modelGroup);
-  modelGroup = new THREE.Group();
-  blockGroup = new THREE.Group();
-  skeletonMesh = createSkeleton(model.segments);
-  blockGroup = createBlocks(model.blocks);
-  modelGroup.add(skeletonMesh, blockGroup);
-  world.add(modelGroup);
-
-  lastPlantCounts = model.plantCounts;
-  lastStats = {
-    cells: selectedCells.length,
-    modules: model.blocks.length,
-    segments: model.segments.length,
-    species: Object.values(model.plantCounts).filter((count) => count > 0).length,
-    truncated: model.truncated,
+function createTopologyNode(cell, nodeIndex, settings) {
+  const random = mulberry32(settings.seed + cell.index * 37 + nodeIndex * 101);
+  const strategy = STRATEGIES[cell.strategy];
+  const plant = choosePlant(strategy, cell, random);
+  const feedback = computePlantFeedback(cell, plant, settings);
+  const remainingRisk = THREE.MathUtils.clamp(cell.totalRisk * (1 - feedback.remediation * 0.72), 0, 1);
+  const height = cell.y + 0.1 + remainingRisk * 0.36 + feedback.vigor * 0.18;
+  return {
+    id: nodeIndex,
+    cell,
+    x: cell.x,
+    y: height,
+    z: cell.z,
+    plant,
+    feedback,
+    remainingRisk,
+    strategy: cell.strategy,
+    primaryPollution: primaryPollution(cell),
+    hotspot: hotspotScore(cell),
   };
 }
 
-function createSkeleton(segments) {
-  const positions = new Float32Array(segments.length * 6);
-  const colors = new Float32Array(segments.length * 6);
-  const white = new THREE.Color("#f5fbff");
-  const riskColor = new THREE.Color();
+function choosePlant(strategy, cell, random) {
+  const keys = strategy.plantKeys;
+  let best = PLANTS.find((plant) => plant.key === keys[0]) || PLANTS[0];
+  let bestScore = -Infinity;
+  keys.forEach((key) => {
+    const plant = PLANTS.find((item) => item.key === key);
+    if (!plant) return;
+    const score =
+      plant.metal * cell.metals +
+      plant.hydrocarbon * cell.hydrocarbon +
+      plant.water * cell.water +
+      plant.stability * Math.max(cell.asbestos, cell.gas) +
+      random() * 0.18;
+    if (score > bestScore) {
+      best = plant;
+      bestScore = score;
+    }
+  });
+  return best;
+}
 
-  segments.forEach((segment, index) => {
-    const i = index * 6;
-    positions.set([segment.start.x, segment.start.y, segment.start.z, segment.end.x, segment.end.y, segment.end.z], i);
-    riskColor.set(STRATEGIES[segment.strategy].glow).lerp(white, 0.58);
-    colors.set([riskColor.r, riskColor.g, riskColor.b, riskColor.r, riskColor.g, riskColor.b], i);
+function computePlantFeedback(cell, plant, settings) {
+  const season = settings.season;
+  const sunlightFit = THREE.MathUtils.clamp(settings.sunlight / 12, 0.2, 1.35);
+  const moistureFit = 1 - Math.min(1, Math.abs(settings.moisture - (0.35 + plant.water * 0.45)));
+  const maturity = 1 - Math.exp(-settings.timeYears / Math.max(0.25, plant.cycle));
+  const densityGain = THREE.MathUtils.clamp(settings.plantDensity, 0.2, 1.4);
+  const densityStress = THREE.MathUtils.clamp(1.18 - Math.max(0, settings.plantDensity - 1.05) * 0.55, 0.62, 1.18);
+  const climate =
+    0.24 +
+    season.growth * 0.28 +
+    season.sunlight * sunlightFit * 0.17 +
+    moistureFit * 0.22 +
+    settings.decayRate * 0.16;
+  const uptake =
+    cell.metals * plant.metal * 0.34 +
+    cell.hydrocarbon * plant.hydrocarbon * 0.34 +
+    cell.water * plant.water * 0.18 +
+    Math.max(cell.asbestos, cell.gas) * plant.stability * 0.22;
+  const decay = 1 - Math.exp(-settings.timeYears * (0.014 + settings.decayRate * 0.052));
+  const remediation = THREE.MathUtils.clamp(
+    (uptake * 0.76 + decay * 0.34) * maturity * climate * densityGain * densityStress,
+    0,
+    0.92,
+  );
+  const vigor = THREE.MathUtils.clamp(maturity * climate * densityStress * (0.52 + cell.confidence * 0.48), 0.05, 1.25);
+  const rootReach = THREE.MathUtils.clamp((0.44 + plant.root * 1.35) * (0.65 + settings.plantDensity * 0.45), 0.35, 2.1);
+  return { remediation, vigor, rootReach };
+}
+
+function buildEdges(nodes, settings) {
+  const bucketSize = 4.25;
+  const buckets = new Map();
+  nodes.forEach((node) => {
+    const key = bucketKey(node.x, node.z, bucketSize);
+    if (!buckets.has(key)) buckets.set(key, []);
+    buckets.get(key).push(node);
+  });
+
+  const edges = [];
+  const edgeSet = new Set();
+
+  nodes.forEach((source) => {
+    const neighbors = nearbyNodes(source, buckets, bucketSize, nodes);
+    const ranked = neighbors
+      .filter((target) => target.id !== source.id)
+      .map((target) => ({ target, weight: edgeWeight(source, target, settings), distance: distance2d(source, target) }))
+      .filter((item) => item.weight > 0.045)
+      .sort((a, b) => b.weight - a.weight || a.distance - b.distance)
+      .slice(0, settings.kLinks);
+
+    ranked.forEach(({ target, weight, distance }) => {
+      if (edges.length >= MAX_EDGES) return;
+      const a = Math.min(source.id, target.id);
+      const b = Math.max(source.id, target.id);
+      const key = `${a}:${b}`;
+      if (edgeSet.has(key)) return;
+      edgeSet.add(key);
+      const flow = THREE.MathUtils.clamp((source.y - target.y) * 0.95 + (source.cell.water + target.cell.water) * 0.35, 0, 1);
+      edges.push({ source, target, weight, distance, flow });
+    });
+  });
+
+  return edges;
+}
+
+function nearbyNodes(source, buckets, bucketSize, allNodes) {
+  const bx = Math.floor(source.x / bucketSize);
+  const bz = Math.floor(source.z / bucketSize);
+  const result = [];
+  for (let radius = 1; radius <= 4 && result.length < 18; radius += 1) {
+    for (let x = bx - radius; x <= bx + radius; x += 1) {
+      for (let z = bz - radius; z <= bz + radius; z += 1) {
+        const bucket = buckets.get(`${x}:${z}`);
+        if (bucket) result.push(...bucket);
+      }
+    }
+  }
+  return result.length > 1 ? result : allNodes;
+}
+
+function edgeWeight(a, b, settings) {
+  const dist = distance2d(a, b);
+  const distScore = Math.exp(-dist / (4.8 + settings.kLinks * 0.95));
+  const pollutionSimilarity = 1 - Math.min(1, Math.abs(a.primaryPollution - b.primaryPollution));
+  const riskGradient = Math.min(1, Math.abs(a.cell.totalRisk - b.cell.totalRisk) * 2.4);
+  const hydroFlow = THREE.MathUtils.clamp((a.cell.water + b.cell.water) * 0.36 + Math.max(0, a.y - b.y) * 0.62, 0, 1);
+  const strategyAffinity = a.strategy === b.strategy ? 1 : sharedStrategyAffinity(a.strategy, b.strategy);
+  const evidence = a.cell.evidence & b.cell.evidence ? 1 : 0;
+  const rootTouch = THREE.MathUtils.clamp((a.feedback.rootReach + b.feedback.rootReach) / Math.max(0.6, dist), 0, 1);
+  return THREE.MathUtils.clamp(
+    distScore *
+      (0.22 +
+        pollutionSimilarity * 0.2 +
+        riskGradient * 0.16 +
+        hydroFlow * 0.18 +
+        strategyAffinity * 0.18 +
+        evidence * 0.08 +
+        rootTouch * 0.16),
+    0,
+    1,
+  );
+}
+
+function sharedStrategyAffinity(a, b) {
+  const wet = new Set(["W-buf", "P-stab", "F-myc"]);
+  const engineering = new Set(["E-cap", "E-dig", "M-open"]);
+  const extraction = new Set(["P-ext", "P-stab"]);
+  if (wet.has(a) && wet.has(b)) return 0.74;
+  if (engineering.has(a) && engineering.has(b)) return 0.62;
+  if (extraction.has(a) && extraction.has(b)) return 0.78;
+  if ((a === "W-buf" && b === "F-myc") || (a === "F-myc" && b === "W-buf")) return 0.72;
+  return 0.34;
+}
+
+function buildSiphons(nodes, edges, settings) {
+  if (settings.siphonLift <= 0.02) return [];
+  const degree = new Map();
+  edges.forEach((edge) => {
+    degree.set(edge.source.id, (degree.get(edge.source.id) || 0) + edge.weight);
+    degree.set(edge.target.id, (degree.get(edge.target.id) || 0) + edge.weight);
+  });
+
+  return nodes
+    .map((node) => ({
+      node,
+      score:
+        node.hotspot * 0.42 +
+        node.cell.water * 0.24 +
+        node.cell.gas * 0.18 +
+        (degree.get(node.id) || 0) * 0.16 +
+        node.cell.confidence * 0.1,
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, Math.round(MAX_SIPHONS * settings.siphonLift))
+    .map((item, index) => {
+      const lift = (2.4 + item.score * 6.4) * settings.siphonLift;
+      const phase = index * 2.399;
+      return {
+        node: item.node,
+        score: item.score,
+        top: new THREE.Vector3(
+          item.node.x + Math.cos(phase) * 0.32 * settings.siphonLift,
+          item.node.y + lift,
+          item.node.z + Math.sin(phase) * 0.32 * settings.siphonLift,
+        ),
+        radius: 0.06 + item.score * 0.12,
+      };
+    });
+}
+
+function summarizeModel(nodes, edges, siphons) {
+  const plantCounts = Object.fromEntries(PLANTS.map((plant) => [plant.key, 0]));
+  nodes.forEach((node) => {
+    plantCounts[node.plant.key] += 1;
+  });
+  const averageRemediation =
+    nodes.reduce((sum, node) => sum + node.feedback.remediation, 0) / Math.max(1, nodes.length);
+  const averageWeight = edges.reduce((sum, edge) => sum + edge.weight, 0) / Math.max(1, edges.length);
+  const weightedRisk = nodes.reduce((sum, node) => sum + node.remainingRisk, 0) / Math.max(1, nodes.length);
+  return { nodes, edges, siphons, plantCounts, averageRemediation, averageWeight, weightedRisk };
+}
+
+function rebuildModel(model) {
+  disposeGroup(networkGroup);
+  disposeGroup(plantGroup);
+  disposeGroup(siphonGroup);
+  world.remove(networkGroup, plantGroup, siphonGroup);
+
+  networkGroup = createNetworkGroup(model.edges);
+  plantGroup = createPlantNodes(model.nodes);
+  siphonGroup = createSiphonSystem(model.siphons, model.edges);
+
+  world.add(networkGroup, plantGroup, siphonGroup);
+  lastModel = model;
+  selectedNodes = model.nodes;
+}
+
+function createNetworkGroup(edges) {
+  const group = new THREE.Group();
+  const positions = new Float32Array(edges.length * 12);
+  const colors = new Float32Array(edges.length * 12);
+  const color = new THREE.Color();
+
+  edges.forEach((edge, index) => {
+    const i = index * 12;
+    const a = edge.source;
+    const b = edge.target;
+    positions.set([a.x, a.y, a.z, b.x, b.y, b.z, a.x, -0.12, a.z, b.x, -0.12, b.z], i);
+    color.set(edge.flow > 0.5 ? "#79d7c8" : edge.weight > 0.52 ? "#f5fbff" : STRATEGIES[a.strategy].glow);
+    color.lerp(new THREE.Color(STRATEGIES[b.strategy].glow), 0.35);
+    const projection = color.clone().multiplyScalar(0.52);
+    colors.set(
+      [
+        color.r,
+        color.g,
+        color.b,
+        color.r,
+        color.g,
+        color.b,
+        projection.r,
+        projection.g,
+        projection.b,
+        projection.r,
+        projection.g,
+        projection.b,
+      ],
+      i,
+    );
   });
 
   const geometry = new THREE.BufferGeometry();
@@ -55215,18 +55374,19 @@ function createSkeleton(segments) {
   const material = new THREE.LineBasicMaterial({
     vertexColors: true,
     transparent: true,
-    opacity: 0.72,
+    opacity: 0.66,
   });
-  return new THREE.LineSegments(geometry, material);
+  group.add(new THREE.LineSegments(geometry, material));
+  return group;
 }
 
-function createBlocks(blocks) {
+function createPlantNodes(nodes) {
   const group = new THREE.Group();
   const buckets = new Map();
-  blocks.forEach((block) => {
-    const key = `${block.plant.key}|${block.strategy}`;
+  nodes.forEach((node) => {
+    const key = `${node.plant.key}|${node.strategy}`;
     if (!buckets.has(key)) buckets.set(key, []);
-    buckets.get(key).push(block);
+    buckets.get(key).push(node);
   });
 
   buckets.forEach((bucket) => {
@@ -55238,17 +55398,20 @@ function createBlocks(blocks) {
       color,
       emissive: color.clone().multiplyScalar(0.18),
       transparent: true,
-      opacity: first.strategy === "E-cap" ? 0.54 : 0.78,
-      shininess: 28,
+      opacity: first.strategy === "E-cap" ? 0.55 : 0.8,
+      shininess: 30,
     });
     const mesh = new THREE.InstancedMesh(geometry, material, bucket.length);
     const matrix = new THREE.Matrix4();
+    const quat = new THREE.Quaternion();
     const scale = new THREE.Vector3();
 
-    bucket.forEach((block, index) => {
-      const size = plantVisualSize(block.plant, strategy, block.risk, block.scale);
+    bucket.forEach((node, index) => {
+      const size = plantVisualSize(node);
+      const yaw = fract(Math.sin(node.cell.siteX * 0.041 + node.cell.siteY * 0.083) * 82.3) * Math.PI;
+      quat.setFromAxisAngle(UP, yaw);
       scale.set(size.x, size.y, size.z);
-      matrix.compose(block.pos, block.quat, scale);
+      matrix.compose(new THREE.Vector3(node.x, node.y + size.y * 0.5, node.z), quat, scale);
       mesh.setMatrixAt(index, matrix);
     });
 
@@ -55259,21 +55422,87 @@ function createBlocks(blocks) {
   return group;
 }
 
-function plantVisualSize(plant, strategy, risk, jitter) {
-  const height = THREE.MathUtils.clamp(Math.log1p(plant.height) / Math.log1p(26), 0.12, 1);
+function plantVisualSize(node) {
+  const strategy = STRATEGIES[node.strategy];
+  const plant = node.plant;
+  const height = THREE.MathUtils.clamp(Math.log1p(plant.height) / Math.log1p(26), 0.1, 1);
   const footprint = THREE.MathUtils.clamp(Math.sqrt(plant.footprint) / Math.sqrt(10), 0.08, 1);
-  const riskScale = 0.86 + risk * 0.9;
+  const vigor = node.feedback.vigor;
+  const vertical = strategy.vertical;
   return {
-    x: (0.16 + footprint * 0.35) * strategy.blockXZ * riskScale * jitter,
-    y: (0.18 + height * 0.92) * strategy.blockY * riskScale * jitter,
-    z: (0.16 + footprint * 0.35) * strategy.blockXZ * riskScale * jitter,
+    x: (0.15 + footprint * 0.36) * (0.9 + node.remainingRisk * 0.8) * (0.72 + vigor * 0.42),
+    y: (0.16 + height * 1.2) * (0.52 + vertical * 1.1) * (0.62 + vigor * 0.8),
+    z: (0.15 + footprint * 0.36) * (0.9 + node.remainingRisk * 0.8) * (0.72 + vigor * 0.42),
   };
 }
 
-function buildSiteBase() {
-  disposeGroup(siteGroup);
-  world.remove(siteGroup);
-  siteGroup = new THREE.Group();
+function createSiphonSystem(siphons, edges) {
+  const group = new THREE.Group();
+  if (!siphons.length) return group;
+
+  const linePositions = [];
+  const lineColors = [];
+  const cyan = new THREE.Color("#79d7c8");
+  const white = new THREE.Color("#f5fbff");
+  const amber = new THREE.Color("#f4df4e");
+
+  siphons.forEach((siphon, index) => {
+    const base = new THREE.Vector3(siphon.node.x, siphon.node.y, siphon.node.z);
+    const mid = base.clone().lerp(siphon.top, 0.62).add(new THREE.Vector3(Math.sin(index) * 0.28, 0, Math.cos(index) * 0.28));
+    pushLine(linePositions, lineColors, base, mid, cyan);
+    pushLine(linePositions, lineColors, mid, siphon.top, white);
+  });
+
+  const siphonNodes = new Set(siphons.map((siphon) => siphon.node.id));
+  edges.forEach((edge) => {
+    if (!(siphonNodes.has(edge.source.id) || siphonNodes.has(edge.target.id))) return;
+    const a = edge.source;
+    const b = edge.target;
+    pushLine(linePositions, lineColors, new THREE.Vector3(a.x, a.y + 0.08, a.z), new THREE.Vector3(b.x, b.y + 0.08, b.z), amber);
+  });
+
+  const lineGeometry = new THREE.BufferGeometry();
+  lineGeometry.setAttribute("position", new THREE.Float32BufferAttribute(linePositions, 3));
+  lineGeometry.setAttribute("color", new THREE.Float32BufferAttribute(lineColors, 3));
+  group.add(
+    new THREE.LineSegments(
+      lineGeometry,
+      new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.82 }),
+    ),
+  );
+
+  const towerGeometry = new THREE.CylinderGeometry(0.2, 0.12, 1, 6, 1, true);
+  const towerMaterial = new THREE.MeshBasicMaterial({
+    color: "#79d7c8",
+    transparent: true,
+    opacity: 0.2,
+    wireframe: true,
+  });
+  const towers = new THREE.InstancedMesh(towerGeometry, towerMaterial, siphons.length);
+  const matrix = new THREE.Matrix4();
+  const quat = new THREE.Quaternion();
+  const scale = new THREE.Vector3();
+  siphons.forEach((siphon, index) => {
+    const height = siphon.top.y - siphon.node.y;
+    scale.set(siphon.radius, height, siphon.radius);
+    matrix.compose(new THREE.Vector3(siphon.node.x, siphon.node.y + height * 0.5, siphon.node.z), quat, scale);
+    towers.setMatrixAt(index, matrix);
+  });
+  towers.instanceMatrix.needsUpdate = true;
+  group.add(towers);
+
+  return group;
+}
+
+function pushLine(positions, colors, a, b, color) {
+  positions.push(a.x, a.y, a.z, b.x, b.y, b.z);
+  colors.push(color.r, color.g, color.b, color.r, color.g, color.b);
+}
+
+function buildSoilSurface() {
+  disposeGroup(soilGroup);
+  world.remove(soilGroup);
+  soilGroup = new THREE.Group();
 
   Object.keys(STRATEGIES).forEach((strategyKey) => {
     const cells = allCells.filter((cell) => cell.strategy === strategyKey);
@@ -55283,7 +55512,7 @@ function buildSiteBase() {
     const material = new THREE.MeshBasicMaterial({
       color: config.color,
       transparent: true,
-      opacity: strategyKey === "M-open" ? 0.1 : 0.22,
+      opacity: strategyKey === "M-open" ? 0.09 : 0.2,
       depthWrite: false,
     });
     const mesh = new THREE.InstancedMesh(geometry, material, cells.length);
@@ -55292,42 +55521,39 @@ function buildSiteBase() {
     const quat = new THREE.Quaternion();
 
     cells.forEach((cell, index) => {
-      scale.set(CELL_WORLD * 0.86, 0.025 + cell.totalRisk * 0.11, CELL_WORLD * 0.86);
-      matrix.compose(new THREE.Vector3(cell.x, -0.14, cell.z), quat, scale);
+      scale.set(CELL_WORLD * 0.86, 0.025 + cell.totalRisk * 0.15 + cell.y * 0.08, CELL_WORLD * 0.86);
+      matrix.compose(new THREE.Vector3(cell.x, cell.y - 0.18, cell.z), quat, scale);
       mesh.setMatrixAt(index, matrix);
     });
 
     mesh.instanceMatrix.needsUpdate = true;
-    siteGroup.add(mesh);
+    soilGroup.add(mesh);
   });
 
-  siteGroup.add(createSiteFrame());
-  world.add(siteGroup);
+  soilGroup.add(createSiteFrame());
+  world.add(soilGroup);
 }
 
 function createSiteFrame() {
   const group = new THREE.Group();
   const width = (SITE_SUMMARY.bounds.xMax - SITE_SUMMARY.bounds.xMin) / WORLD_SCALE;
   const depth = (SITE_SUMMARY.bounds.yMax - SITE_SUMMARY.bounds.yMin) / WORLD_SCALE;
-  const material = new THREE.LineBasicMaterial({ color: "#8df7ff", transparent: true, opacity: 0.36 });
-  const frame = new THREE.LineSegments(
-    new THREE.EdgesGeometry(new THREE.BoxGeometry(width, 0.12, depth)),
-    material,
-  );
-  frame.position.y = -0.04;
+  const material = new THREE.LineBasicMaterial({ color: "#8df7ff", transparent: true, opacity: 0.34 });
+  const frame = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(width, 0.18, depth)), material);
+  frame.position.y = -0.08;
   group.add(frame);
 
-  const contourMaterial = new THREE.LineBasicMaterial({ color: "#18d98c", transparent: true, opacity: 0.1 });
-  for (let ring = 0; ring < 16; ring += 1) {
+  const contourMaterial = new THREE.LineBasicMaterial({ color: "#18d98c", transparent: true, opacity: 0.12 });
+  for (let ring = 0; ring < 18; ring += 1) {
     const points = [];
-    const rx = width * (0.18 + (ring % 5) * 0.045);
-    const rz = depth * (0.12 + (ring % 7) * 0.035);
-    const cx = -width * 0.36 + ((ring * 17) % 70) * 0.01 * width;
-    const cz = -depth * 0.38 + ((ring * 23) % 80) * 0.01 * depth;
+    const rx = width * (0.16 + (ring % 6) * 0.044);
+    const rz = depth * (0.11 + (ring % 8) * 0.034);
+    const cx = -width * 0.38 + ((ring * 17) % 76) * 0.01 * width;
+    const cz = -depth * 0.4 + ((ring * 23) % 84) * 0.01 * depth;
     for (let i = 0; i <= 80; i += 1) {
       const a = (i / 80) * Math.PI * 2;
       const wobble = 1 + Math.sin(a * 3 + ring) * 0.1 + Math.cos(a * 5) * 0.06;
-      points.push(new THREE.Vector3(cx + Math.cos(a) * rx * wobble, -0.05, cz + Math.sin(a) * rz * wobble));
+      points.push(new THREE.Vector3(cx + Math.cos(a) * rx * wobble, -0.16, cz + Math.sin(a) * rz * wobble));
     }
     group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), contourMaterial));
   }
@@ -55368,28 +55594,25 @@ function buildEvidenceLayer() {
 }
 
 function pushEvidencePoint(cell, color, points, colors) {
-  points.push(cell.x, 0.035, cell.z);
+  points.push(cell.x, cell.y + 0.035, cell.z);
   colors.push(color.r, color.g, color.b);
 }
 
 function updateVisibility() {
-  siteGroup.visible = els.showSite.checked;
+  soilGroup.visible = els.showSoil.checked;
+  networkGroup.visible = els.showNetwork.checked;
+  plantGroup.visible = els.showPlants.checked;
+  siphonGroup.visible = els.showSiphon.checked;
   evidenceGroup.visible = els.showEvidence.checked;
-  blockGroup.visible = els.showBlocks.checked;
-  if (skeletonMesh) skeletonMesh.visible = els.showSkeleton.checked;
 }
 
 function updateStats() {
-  els.cellCount.textContent = compactNumber(lastStats.cells);
-  els.moduleCount.textContent = compactNumber(lastStats.modules);
-  els.segmentCount.textContent = compactNumber(lastStats.segments);
-  els.speciesCount.textContent = compactNumber(lastStats.species);
+  els.soilNodeCount.textContent = compactNumber(lastModel.nodes.length);
+  els.plantNodeCount.textContent = compactNumber(lastModel.nodes.length);
+  els.edgeCount.textContent = compactNumber(lastModel.edges.length);
+  els.remediationScore.textContent = `${Math.round(lastModel.averageRemediation * 100)}%`;
   els.hudScenario.textContent = label(activeScenario);
-  els.hudGeneration.textContent = I18N[language].generation(
-    els.iterations.value,
-    String(els.seed.value).slice(-2).padStart(2, "0"),
-    lastStats.truncated,
-  );
+  els.hudGeneration.textContent = I18N[language].generation(els.kLinks.value, String(els.seed.value).slice(-3));
   els.hudSite.textContent = `${SITE_SUMMARY.name} / ${compactNumber(SITE_SUMMARY.count)} cells`;
   renderDynamicDashboard();
   renderStrategyLegend();
@@ -55402,7 +55625,7 @@ function renderStaticDashboard() {
   els.siteMeta.innerHTML = [
     metaItem(language === "zh" ? "网格" : "Cells", compactNumber(SITE_SUMMARY.count)),
     metaItem(language === "zh" ? "面积" : "Area", `${areaHa.toFixed(1)} ${I18N[language].hectare}`),
-    metaItem(language === "zh" ? "范围" : "Extent", `${Math.round(width)} x ${Math.round(depth)}m`),
+    metaItem(language === "zh" ? "拓扑面" : "Surface", `${Math.round(width)} x ${Math.round(depth)}m`),
     metaItem(language === "zh" ? "最高风险" : "Max Risk", SITE_SUMMARY.bounds.riskMax.toFixed(2)),
   ].join("");
 }
@@ -55415,22 +55638,29 @@ function renderDynamicDashboard() {
   renderBars();
   renderMiniMap();
   renderRadar();
-  renderClusters();
+  renderPlantLegend();
 }
 
 function renderBars() {
-  const counts = countBy(selectedCells, "strategy");
-  const max = Math.max(...Object.values(SITE_SUMMARY.strategyCounts));
-  els.objectiveOne.innerHTML = Object.keys(STRATEGIES)
-    .filter((key) => (counts[key] || SITE_SUMMARY.strategyCounts[key]) > 0)
-    .map((key) => {
-      const config = STRATEGIES[key];
-      const value = Math.max(2, ((counts[key] || 0) / max) * 100);
+  const familyCounts = countBy(lastModel.nodes.map((node) => node.cell), "family");
+  const max = Math.max(1, ...Object.values(familyCounts));
+  const colors = {
+    hydrocarbon: "#ff9b84",
+    metals: "#a7ffcb",
+    "asbestos/rubble": "#d8c7d6",
+    "water mobility": "#79d7c8",
+    "ground gas": "#ffd2dc",
+  };
+  els.objectiveOne.innerHTML = Object.entries(familyCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([key, count]) => {
+      const value = Math.max(4, (count / max) * 100);
       return `
-        <div class="mini-bar" style="--strategy-color:${config.color}">
-          <span>${config.short}</span>
+        <div class="mini-bar" style="--strategy-color:${colors[key] || "#f5fbff"}">
+          <span>${key}</span>
           <span class="mini-bar-track"><span class="mini-bar-fill" style="--value:${value}%"></span></span>
-          <strong>${compactNumber(counts[key] || 0)}</strong>
+          <strong>${compactNumber(count)}</strong>
         </div>
       `;
     })
@@ -55438,34 +55668,34 @@ function renderBars() {
 }
 
 function renderMiniMap() {
-  const sample = chooseCells(
-    allCells.filter((cell) => cell.strategy === "W-buf" || cell.evidence & 1),
-    90,
-    Number(els.seed.value) + 77,
-  );
   const width = SITE_SUMMARY.bounds.xMax - SITE_SUMMARY.bounds.xMin;
   const depth = SITE_SUMMARY.bounds.yMax - SITE_SUMMARY.bounds.yMin;
+  const sample = lastModel.nodes
+    .slice()
+    .sort((a, b) => b.feedback.remediation - a.feedback.remediation)
+    .slice(0, 160);
   els.objectiveTwo.innerHTML = sample
-    .map((cell) => {
-      const x = ((cell.siteX - SITE_SUMMARY.bounds.xMin) / width) * 100;
-      const y = 100 - ((cell.siteY - SITE_SUMMARY.bounds.yMin) / depth) * 100;
-      return `<span class="mini-dot" style="left:${x}%;top:${y}%;--strategy-color:${STRATEGIES[cell.strategy].glow}"></span>`;
+    .map((node) => {
+      const x = ((node.cell.siteX - SITE_SUMMARY.bounds.xMin) / width) * 100;
+      const y = 100 - ((node.cell.siteY - SITE_SUMMARY.bounds.yMin) / depth) * 100;
+      const size = 3 + node.feedback.remediation * 7;
+      return `<span class="mini-dot" style="left:${x}%;top:${y}%;width:${size}px;height:${size}px;--strategy-color:${STRATEGIES[node.strategy].glow}"></span>`;
     })
     .join("");
 }
 
 function renderRadar() {
-  const counts = countBy(selectedCells, "strategy");
-  const total = Math.max(1, selectedCells.length);
-  const objectiveA = THREE.MathUtils.clamp(lastStats.modules / Math.max(1, total * 8), 0, 1);
-  const objectiveB = THREE.MathUtils.clamp(((counts["W-buf"] || 0) / total) * 1.9, 0, 1);
-  const engineering = ((counts["E-cap"] || 0) + (counts["E-dig"] || 0)) / total;
-  const objectiveC = THREE.MathUtils.clamp(1 - engineering * 0.55, 0, 1);
-  const center = { x: 90, y: 82 };
+  const connectivity = THREE.MathUtils.clamp(lastModel.edges.length / Math.max(1, lastModel.nodes.length * Number(els.kLinks.value)), 0, 1);
+  const remediation = THREE.MathUtils.clamp(lastModel.averageRemediation * 1.65, 0, 1);
+  const siphon = THREE.MathUtils.clamp(lastModel.siphons.length / MAX_SIPHONS, 0, 1);
+  const confidence =
+    lastModel.nodes.reduce((sum, node) => sum + node.cell.confidence, 0) / Math.max(1, lastModel.nodes.length);
+  const center = { x: 90, y: 78 };
   const axes = [
-    { label: "FO 1", angle: -Math.PI / 2, value: objectiveA },
-    { label: "FO 2", angle: Math.PI / 6, value: objectiveB },
-    { label: "FO 3", angle: (Math.PI * 5) / 6, value: objectiveC },
+    { label: "K", angle: -Math.PI / 2, value: connectivity },
+    { label: "P", angle: 0, value: remediation },
+    { label: "S", angle: Math.PI / 2, value: siphon },
+    { label: "C", angle: Math.PI, value: confidence },
   ];
   const rings = [0.25, 0.5, 0.75, 1]
     .map((scale) => radarPolygon(axes, center, 54 * scale, 1))
@@ -55486,7 +55716,7 @@ function renderRadar() {
         return `<line x1="${center.x}" y1="${center.y}" x2="${x}" y2="${y}" stroke="rgba(255,255,255,.24)" stroke-dasharray="2 4"/><text x="${x}" y="${y}" text-anchor="middle">${axis.label}</text>`;
       })
       .join("")}
-    <polygon points="${valuePoints}" fill="rgba(255,95,80,.68)" stroke="#ffdf62" stroke-width="1.5"/>
+    <polygon points="${valuePoints}" fill="rgba(255,95,80,.62)" stroke="#ffdf62" stroke-width="1.5"/>
   `;
 }
 
@@ -55497,16 +55727,17 @@ function radarPolygon(axes, center, radius, opacity) {
   return `<polygon points="${points}" fill="none" stroke="rgba(255,255,255,${0.09 * opacity})" stroke-dasharray="2 4"/>`;
 }
 
-function renderClusters() {
-  const counts = countBy(selectedCells, "strategy");
-  els.clusterLegend.innerHTML = Object.entries(counts)
+function renderPlantLegend() {
+  els.plantLegend.innerHTML = Object.entries(lastModel.plantCounts)
+    .filter(([, count]) => count > 0)
     .sort((a, b) => b[1] - a[1])
+    .slice(0, 8)
     .map(([key, count], index) => {
-      const config = STRATEGIES[key];
+      const plant = PLANTS.find((item) => item.key === key);
       return `
-        <div class="cluster-item" style="--strategy-color:${config.color}">
+        <div class="cluster-item" style="--strategy-color:${plant?.color || "#f5fbff"}">
           <span class="cluster-swatch"></span>
-          <strong>Cluster ${index + 1} / ${strategyName(key)}</strong>
+          <strong>${index + 1}. ${plantName(plant)}</strong>
           <small>${compactNumber(count)}</small>
         </div>
       `;
@@ -55531,6 +55762,30 @@ function renderStrategyLegend() {
     .join("");
 }
 
+function primaryPollution(cell) {
+  return Math.max(cell.hydrocarbon, cell.metals, cell.asbestos, cell.water, cell.gas, cell.totalRisk);
+}
+
+function hotspotScore(cell) {
+  return THREE.MathUtils.clamp(
+    cell.totalRisk * 0.4 + cell.water * 0.18 + cell.gas * 0.16 + cell.asbestos * 0.14 + cell.hydrocarbon * 0.12,
+    0,
+    1,
+  );
+}
+
+function localContrast(cell) {
+  return fract(Math.sin(cell.siteX * 12.9898 + cell.siteY * 78.233) * 43758.5453);
+}
+
+function bucketKey(x, z, bucketSize) {
+  return `${Math.floor(x / bucketSize)}:${Math.floor(z / bucketSize)}`;
+}
+
+function distance2d(a, b) {
+  return Math.hypot(a.x - b.x, a.z - b.z);
+}
+
 function countBy(items, key) {
   return items.reduce((acc, item) => {
     acc[item[key]] = (acc[item[key]] || 0) + 1;
@@ -55547,6 +55802,11 @@ function strategyName(key) {
   return item ? (language === "zh" ? `${item.short} / ${item.zh}` : `${item.short} / ${item.en}`) : key;
 }
 
+function plantName(plant) {
+  if (!plant) return "";
+  return language === "zh" ? `${plant.cn}` : plant.en;
+}
+
 function compactNumber(value) {
   return Intl.NumberFormat(language === "zh" ? "zh-CN" : "en-US", {
     notation: "compact",
@@ -55555,7 +55815,7 @@ function compactNumber(value) {
 }
 
 function resetCamera() {
-  rotationTarget = { x: -0.86, y: -0.32 };
+  rotationTarget = { x: -0.9, y: -0.38 };
   zoomTarget = 76;
 }
 
@@ -55590,7 +55850,7 @@ function onPointerMove(event) {
   const dx = event.clientX - pointerState.x;
   const dy = event.clientY - pointerState.y;
   rotationTarget.y = pointerState.ry + dx * 0.008;
-  rotationTarget.x = THREE.MathUtils.clamp(pointerState.rx + dy * 0.008, -1.45, 0.2);
+  rotationTarget.x = THREE.MathUtils.clamp(pointerState.rx + dy * 0.008, -1.45, 0.22);
 }
 
 function onWheel(event) {
@@ -55603,7 +55863,7 @@ function exportPng() {
   const url = renderer.domElement.toDataURL("image/png");
   const link = document.createElement("a");
   link.href = url;
-  link.download = `dagenham-dock-lsystem-${Date.now()}.png`;
+  link.download = `dagenham-dock-topology-network-${Date.now()}.png`;
   link.click();
 }
 
