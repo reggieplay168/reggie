@@ -130,6 +130,7 @@ textarea {
 .control-panel,
 .analysis-panel,
 .analysis-toggle,
+.node-inspector,
 .strategy-strip,
 .hud {
   position: fixed;
@@ -202,6 +203,126 @@ textarea {
 
 .app.analysis-collapsed .hud {
   max-width: min(900px, calc(100vw - 540px));
+}
+
+.node-inspector {
+  left: 42px;
+  bottom: 172px;
+  width: min(360px, calc(100vw - 540px));
+  max-width: 360px;
+  padding: 13px;
+  color: rgba(255, 250, 240, 0.92);
+  background: rgba(4, 12, 52, 0.64);
+  border: 1px solid rgba(111, 247, 255, 0.22);
+  border-radius: 8px;
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.26);
+  backdrop-filter: blur(12px);
+}
+
+.node-inspector.active {
+  border-color: rgba(244, 223, 78, 0.52);
+  box-shadow:
+    0 20px 56px rgba(0, 0, 0, 0.28),
+    0 0 28px rgba(244, 223, 78, 0.12);
+}
+
+.inspector-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 10px;
+}
+
+.inspector-head h2 {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.15;
+}
+
+.node-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.inspector-hint {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: rgba(255, 250, 240, 0.68);
+  font-size: 0.78rem;
+  line-height: 1.42;
+}
+
+.node-metric {
+  min-width: 0;
+  padding: 7px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 7px;
+}
+
+.node-metric span {
+  display: block;
+  overflow: hidden;
+  color: rgba(255, 250, 240, 0.52);
+  font-size: 0.62rem;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.node-metric strong {
+  display: block;
+  overflow: hidden;
+  margin-top: 4px;
+  color: rgba(255, 250, 240, 0.96);
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.node-neighbor-title {
+  margin-top: 11px;
+  color: var(--cyan);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.node-neighbors {
+  display: grid;
+  gap: 6px;
+  margin-top: 7px;
+}
+
+.neighbor-item {
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.72rem;
+}
+
+.neighbor-dot {
+  width: 10px;
+  height: 10px;
+  background: var(--strategy-color);
+  box-shadow: 0 0 10px var(--strategy-color);
+}
+
+.neighbor-item strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.neighbor-item small {
+  color: rgba(255, 250, 240, 0.62);
+  font-variant-numeric: tabular-nums;
 }
 
 .analysis-card {
@@ -654,6 +775,10 @@ button.primary {
   .hud {
     max-width: min(620px, calc(100vw - 510px));
   }
+
+  .node-inspector {
+    display: none;
+  }
 }
 
 @media (max-width: 780px) {
@@ -903,6 +1028,19 @@ button.primary {
           </div>
           <div id="plantLegend" class="cluster-legend"></div>
         </div>
+      </aside>
+
+      <aside id="nodeInspector" class="node-inspector" aria-live="polite">
+        <div class="inspector-head">
+          <div>
+            <p class="eyebrow">Node Inspector</p>
+            <h2 id="nodeTitle" data-i18n="selectedNode">节点关系检查</h2>
+          </div>
+          <button id="nodeClear" class="icon-button" type="button" aria-label="Clear node selection">×</button>
+        </div>
+        <div id="nodeMeta" class="node-meta"></div>
+        <div class="node-neighbor-title" data-i18n="connectedTo">一跳邻接</div>
+        <div id="nodeNeighbors" class="node-neighbors"></div>
       </aside>
 
       <aside class="strategy-strip" aria-label="Remediation strategy legend">
@@ -54702,6 +54840,17 @@ const I18N = {
     autoRotate: "自动旋转",
     showAnalysis: "展开分析",
     hideAnalysis: "收起分析",
+    selectedNode: "节点关系检查",
+    clearNode: "清除节点选择",
+    inspectHint: "点击场地里的一个植物节点，查看它的一跳邻接、边权重和修复反馈。",
+    connectedTo: "一跳邻接",
+    degree: "度",
+    pollutant: "污染",
+    plantAgent: "植物代理",
+    remainingRisk: "剩余风险",
+    repairRate: "修复反馈",
+    meanEdge: "平均边权",
+    nodeLabel: (id) => `节点 ${id}`,
     equation: "拓扑公式",
     generate: "计算网络",
     newSeed: "新种子",
@@ -54750,6 +54899,17 @@ const I18N = {
     autoRotate: "Auto Rotate",
     showAnalysis: "Show Analysis",
     hideAnalysis: "Hide Analysis",
+    selectedNode: "Node Relationship Check",
+    clearNode: "Clear node selection",
+    inspectHint: "Click a plant node in the field to inspect first-hop adjacency, edge weights, and planting feedback.",
+    connectedTo: "First-Hop Adjacency",
+    degree: "Degree",
+    pollutant: "Pollutant",
+    plantAgent: "Plant Agent",
+    remainingRisk: "Remaining Risk",
+    repairRate: "Feedback",
+    meanEdge: "Mean Edge",
+    nodeLabel: (id) => `Node ${id}`,
     equation: "Topology Equation",
     generate: "Compute Network",
     newSeed: "New Seed",
@@ -54812,6 +54972,11 @@ const els = {
   cameraReset: document.querySelector("#cameraReset"),
   exportPng: document.querySelector("#exportPng"),
   analysisToggle: document.querySelector("#analysisToggle"),
+  nodeInspector: document.querySelector("#nodeInspector"),
+  nodeTitle: document.querySelector("#nodeTitle"),
+  nodeMeta: document.querySelector("#nodeMeta"),
+  nodeNeighbors: document.querySelector("#nodeNeighbors"),
+  nodeClear: document.querySelector("#nodeClear"),
   soilNodeCount: document.querySelector("#soilNodeCount"),
   plantNodeCount: document.querySelector("#plantNodeCount"),
   edgeCount: document.querySelector("#edgeCount"),
@@ -54844,6 +55009,10 @@ let generateTimer = null;
 let pointerState = null;
 let rotationTarget = { x: -0.9, y: -0.38 };
 let zoomTarget = 76;
+let selectedNode = null;
+
+const raycaster = new THREE.Raycaster();
+const pointerNdc = new THREE.Vector2();
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color("#03092a");
@@ -54879,8 +55048,9 @@ let evidenceGroup = new THREE.Group();
 let networkGroup = new THREE.Group();
 let plantGroup = new THREE.Group();
 let siphonGroup = new THREE.Group();
+let highlightGroup = new THREE.Group();
 
-world.add(soilGroup, evidenceGroup, networkGroup, plantGroup, siphonGroup);
+world.add(soilGroup, evidenceGroup, networkGroup, plantGroup, siphonGroup, highlightGroup);
 
 init();
 
@@ -54998,13 +55168,12 @@ function bindEvents() {
   els.cameraReset.addEventListener("click", resetCamera);
   els.exportPng.addEventListener("click", exportPng);
   els.analysisToggle.addEventListener("click", toggleAnalysisPanel);
+  els.nodeClear.addEventListener("click", () => selectNode(null));
 
   window.addEventListener("resize", resize);
   els.canvas.addEventListener("pointerdown", onPointerDown);
   window.addEventListener("pointermove", onPointerMove);
-  window.addEventListener("pointerup", () => {
-    pointerState = null;
-  });
+  window.addEventListener("pointerup", onPointerUp);
   els.canvas.addEventListener("wheel", onWheel, { passive: false });
 }
 
@@ -55055,10 +55224,13 @@ function applyLanguage() {
   els.langZh.classList.toggle("active", language === "zh");
   els.langEn.classList.toggle("active", language === "en");
   els.networkEquation.value = t.equationText;
+  els.nodeClear.title = t.clearNode;
+  els.nodeClear.setAttribute("aria-label", t.clearNode);
   updateAnalysisToggle();
   refreshSelectLabels();
   renderStaticDashboard();
   renderStrategyLegend();
+  renderNodeInspector();
 }
 
 function refreshSelectLabels() {
@@ -55379,15 +55551,19 @@ function rebuildModel(model) {
   disposeGroup(networkGroup);
   disposeGroup(plantGroup);
   disposeGroup(siphonGroup);
-  world.remove(networkGroup, plantGroup, siphonGroup);
+  disposeGroup(highlightGroup);
+  world.remove(networkGroup, plantGroup, siphonGroup, highlightGroup);
 
   networkGroup = createNetworkGroup(model.edges);
   plantGroup = createPlantNodes(model.nodes);
   siphonGroup = createSiphonSystem(model.siphons, model.edges);
+  highlightGroup = new THREE.Group();
 
-  world.add(networkGroup, plantGroup, siphonGroup);
+  world.add(networkGroup, plantGroup, siphonGroup, highlightGroup);
   lastModel = model;
   selectedNodes = model.nodes;
+  selectedNode = null;
+  renderNodeInspector();
 }
 
 function createNetworkGroup(edges) {
@@ -55457,6 +55633,8 @@ function createPlantNodes(nodes) {
       shininess: 30,
     });
     const mesh = new THREE.InstancedMesh(geometry, material, bucket.length);
+    mesh.userData.nodes = bucket;
+    mesh.userData.pickable = true;
     const matrix = new THREE.Matrix4();
     const quat = new THREE.Quaternion();
     const scale = new THREE.Vector3();
@@ -55659,6 +55837,117 @@ function updateVisibility() {
   plantGroup.visible = els.showPlants.checked;
   siphonGroup.visible = els.showSiphon.checked;
   evidenceGroup.visible = els.showEvidence.checked;
+  highlightGroup.visible = true;
+}
+
+function selectNode(node) {
+  selectedNode = node;
+  buildNodeHighlight(node);
+  renderNodeInspector();
+}
+
+function pickNode(event) {
+  const rect = els.canvas.getBoundingClientRect();
+  pointerNdc.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  pointerNdc.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(pointerNdc, camera);
+  const hits = raycaster.intersectObjects(plantGroup.children, true);
+  const hit = hits.find((item) => item.object?.userData?.pickable && Number.isInteger(item.instanceId));
+  if (!hit) {
+    selectNode(null);
+    return;
+  }
+  selectNode(hit.object.userData.nodes[hit.instanceId]);
+}
+
+function buildNodeHighlight(node) {
+  disposeGroup(highlightGroup);
+  world.remove(highlightGroup);
+  highlightGroup = new THREE.Group();
+  if (!node) {
+    world.add(highlightGroup);
+    return;
+  }
+
+  const incident = incidentEdges(node).sort((a, b) => b.weight - a.weight);
+  const positions = [];
+  const colors = [];
+  const yellow = new THREE.Color("#f4df4e");
+  const cyan = new THREE.Color("#79d7c8");
+  const white = new THREE.Color("#f5fbff");
+
+  incident.forEach((edge) => {
+    const other = edge.source.id === node.id ? edge.target : edge.source;
+    const color = edge.flow > 0.5 ? cyan : yellow;
+    positions.push(node.x, node.y + 0.16, node.z, other.x, other.y + 0.16, other.z);
+    colors.push(color.r, color.g, color.b, white.r, white.g, white.b);
+  });
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+  highlightGroup.add(
+    new THREE.LineSegments(
+      geometry,
+      new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.96 }),
+    ),
+  );
+
+  const marker = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(0.5, 1),
+    new THREE.MeshBasicMaterial({ color: "#f4df4e", transparent: true, opacity: 0.92, wireframe: true }),
+  );
+  marker.position.set(node.x, node.y + 0.9, node.z);
+  highlightGroup.add(marker);
+
+  world.add(highlightGroup);
+}
+
+function incidentEdges(node) {
+  if (!node) return [];
+  return lastModel.edges.filter((edge) => edge.source.id === node.id || edge.target.id === node.id);
+}
+
+function renderNodeInspector() {
+  const t = I18N[language];
+  if (!selectedNode) {
+    els.nodeTitle.textContent = t.selectedNode;
+    els.nodeMeta.innerHTML = `<p class="inspector-hint">${t.inspectHint}</p>`;
+    els.nodeNeighbors.innerHTML = "";
+    els.nodeInspector.classList.remove("active");
+    return;
+  }
+
+  const edges = incidentEdges(selectedNode).sort((a, b) => b.weight - a.weight);
+  const mean = edges.reduce((sum, edge) => sum + edge.weight, 0) / Math.max(1, edges.length);
+  els.nodeInspector.classList.add("active");
+  els.nodeTitle.textContent = t.nodeLabel(selectedNode.id);
+  els.nodeMeta.innerHTML = [
+    nodeMetric(t.degree, edges.length),
+    nodeMetric(t.pollutant, pollutionName(selectedNode.cell)),
+    nodeMetric(t.plantAgent, plantName(selectedNode.plant)),
+    nodeMetric(t.remainingRisk, selectedNode.remainingRisk.toFixed(2)),
+    nodeMetric(t.repairRate, `${Math.round(selectedNode.feedback.remediation * 100)}%`),
+    nodeMetric(t.meanEdge, mean.toFixed(2)),
+  ].join("");
+
+  els.nodeNeighbors.innerHTML = edges
+    .slice(0, 8)
+    .map((edge) => {
+      const other = edge.source.id === selectedNode.id ? edge.target : edge.source;
+      return `
+        <div class="neighbor-item" style="--strategy-color:${STRATEGIES[other.strategy].glow}">
+          <span class="neighbor-dot"></span>
+          <strong>${t.nodeLabel(other.id)}</strong>
+          <small>${STRATEGIES[other.strategy].short} · W=${edge.weight.toFixed(2)}</small>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function nodeMetric(labelText, value) {
+  return `<div class="node-metric"><span>${labelText}</span><strong>${value}</strong></div>`;
 }
 
 function toggleAnalysisPanel() {
@@ -55874,6 +56163,17 @@ function plantName(plant) {
   return language === "zh" ? `${plant.cn}` : plant.en;
 }
 
+function pollutionName(cell) {
+  const values = [
+    ["hydrocarbon", cell.hydrocarbon, language === "zh" ? "烃类" : "hydrocarbon"],
+    ["metals", cell.metals, language === "zh" ? "金属" : "metals"],
+    ["asbestos", cell.asbestos, language === "zh" ? "石棉/碎石" : "asbestos/rubble"],
+    ["water", cell.water, language === "zh" ? "水迁移" : "water mobility"],
+    ["gas", cell.gas, language === "zh" ? "地气" : "ground gas"],
+  ];
+  return values.sort((a, b) => b[1] - a[1])[0][2];
+}
+
 function compactNumber(value) {
   return Intl.NumberFormat(language === "zh" ? "zh-CN" : "en-US", {
     notation: "compact",
@@ -55909,6 +56209,8 @@ function onPointerDown(event) {
     y: event.clientY,
     rx: rotationTarget.x,
     ry: rotationTarget.y,
+    moved: false,
+    target: event.target,
   };
 }
 
@@ -55916,8 +56218,16 @@ function onPointerMove(event) {
   if (!pointerState) return;
   const dx = event.clientX - pointerState.x;
   const dy = event.clientY - pointerState.y;
+  if (Math.hypot(dx, dy) > 5) pointerState.moved = true;
   rotationTarget.y = pointerState.ry + dx * 0.008;
   rotationTarget.x = THREE.MathUtils.clamp(pointerState.rx + dy * 0.008, -1.45, 0.22);
+}
+
+function onPointerUp(event) {
+  if (pointerState && !pointerState.moved && pointerState.target === els.canvas) {
+    pickNode(event);
+  }
+  pointerState = null;
 }
 
 function onWheel(event) {
