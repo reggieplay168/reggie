@@ -129,6 +129,7 @@ textarea {
 
 .control-panel,
 .analysis-panel,
+.analysis-toggle,
 .strategy-strip,
 .hud {
   position: fixed;
@@ -152,16 +153,55 @@ textarea {
 }
 
 .analysis-panel {
-  top: 32px;
+  top: 82px;
   right: 496px;
   display: grid;
   width: 318px;
-  max-height: calc(100vh - 64px);
+  max-height: calc(100vh - 112px);
   gap: 10px;
   overflow-y: auto;
   padding-right: 4px;
   color: rgba(255, 250, 240, 0.9);
   scrollbar-width: thin;
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+  transition:
+    transform 220ms ease,
+    opacity 180ms ease;
+}
+
+.analysis-toggle {
+  top: 32px;
+  right: 496px;
+  min-height: 36px;
+  padding: 0 14px;
+  color: rgba(255, 250, 240, 0.95);
+  background: rgba(4, 12, 52, 0.72);
+  border: 1px solid rgba(111, 247, 255, 0.28);
+  border-radius: 8px;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(12px);
+}
+
+.app.analysis-collapsed .analysis-panel {
+  transform: translateX(calc(100% + 22px));
+  opacity: 0;
+  pointer-events: none;
+}
+
+.app:not(.analysis-collapsed) .analysis-panel {
+  transform: translateX(0) !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+.app.analysis-collapsed .strategy-strip {
+  right: 496px;
+}
+
+.app.analysis-collapsed .hud {
+  max-width: min(900px, calc(100vw - 540px));
 }
 
 .analysis-card {
@@ -599,6 +639,10 @@ button.primary {
     display: none;
   }
 
+  .analysis-toggle {
+    display: none;
+  }
+
   .strategy-strip {
     right: 496px;
   }
@@ -669,7 +713,7 @@ button.primary {
     </style>
   </head>
   <body>
-    <main class="app">
+    <main class="app analysis-collapsed">
       <canvas id="scene" aria-label="Dagenham Dock pollution and planting topology network"></canvas>
 
       <header class="title-block">
@@ -816,6 +860,10 @@ button.primary {
           </div>
         </dl>
       </section>
+
+      <button id="analysisToggle" class="analysis-toggle" type="button" aria-pressed="false">
+        <span data-i18n="showAnalysis">展开分析</span>
+      </button>
 
       <aside class="analysis-panel" aria-label="Topology analysis dashboard">
         <div class="analysis-card site-card">
@@ -54652,6 +54700,8 @@ const I18N = {
     showSiphon: "虹吸构筑",
     showEvidence: "证据层",
     autoRotate: "自动旋转",
+    showAnalysis: "展开分析",
+    hideAnalysis: "收起分析",
     equation: "拓扑公式",
     generate: "计算网络",
     newSeed: "新种子",
@@ -54698,6 +54748,8 @@ const I18N = {
     showSiphon: "Siphon",
     showEvidence: "Evidence",
     autoRotate: "Auto Rotate",
+    showAnalysis: "Show Analysis",
+    hideAnalysis: "Hide Analysis",
     equation: "Topology Equation",
     generate: "Compute Network",
     newSeed: "New Seed",
@@ -54759,6 +54811,7 @@ const els = {
   randomSeed: document.querySelector("#randomSeed"),
   cameraReset: document.querySelector("#cameraReset"),
   exportPng: document.querySelector("#exportPng"),
+  analysisToggle: document.querySelector("#analysisToggle"),
   soilNodeCount: document.querySelector("#soilNodeCount"),
   plantNodeCount: document.querySelector("#plantNodeCount"),
   edgeCount: document.querySelector("#edgeCount"),
@@ -54944,6 +54997,7 @@ function bindEvents() {
   els.generate.addEventListener("click", generate);
   els.cameraReset.addEventListener("click", resetCamera);
   els.exportPng.addEventListener("click", exportPng);
+  els.analysisToggle.addEventListener("click", toggleAnalysisPanel);
 
   window.addEventListener("resize", resize);
   els.canvas.addEventListener("pointerdown", onPointerDown);
@@ -55001,6 +55055,7 @@ function applyLanguage() {
   els.langZh.classList.toggle("active", language === "zh");
   els.langEn.classList.toggle("active", language === "en");
   els.networkEquation.value = t.equationText;
+  updateAnalysisToggle();
   refreshSelectLabels();
   renderStaticDashboard();
   renderStrategyLegend();
@@ -55604,6 +55659,18 @@ function updateVisibility() {
   plantGroup.visible = els.showPlants.checked;
   siphonGroup.visible = els.showSiphon.checked;
   evidenceGroup.visible = els.showEvidence.checked;
+}
+
+function toggleAnalysisPanel() {
+  document.querySelector(".app").classList.toggle("analysis-collapsed");
+  updateAnalysisToggle();
+}
+
+function updateAnalysisToggle() {
+  const isCollapsed = document.querySelector(".app").classList.contains("analysis-collapsed");
+  const text = isCollapsed ? I18N[language].showAnalysis : I18N[language].hideAnalysis;
+  els.analysisToggle.querySelector("span").textContent = text;
+  els.analysisToggle.setAttribute("aria-pressed", String(!isCollapsed));
 }
 
 function updateStats() {
