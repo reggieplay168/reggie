@@ -229,7 +229,7 @@ input[type="range"] {
 }
 
 .toggles {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   margin: 12px 0 2px;
 }
 
@@ -603,7 +603,6 @@ button.primary {
         <div class="toggles">
           <label><input id="showBlocks" type="checkbox" /> <span data-i18n="coloredBlocks">彩色块</span></label>
           <label><input id="showSkeleton" type="checkbox" /> <span data-i18n="whiteSkeleton">白色骨架</span></label>
-          <label><input id="showGroundPlane" type="checkbox" /> <span data-i18n="groundPlane">地面板</span></label>
           <label><input id="autoRotate" type="checkbox" /> <span data-i18n="autoRotate">自动旋转</span></label>
         </div>
 
@@ -54529,7 +54528,6 @@ const I18N = {
     seed: "随机种子",
     coloredBlocks: "彩色块",
     whiteSkeleton: "白色骨架",
-    groundPlane: "地面板",
     autoRotate: "自动旋转",
     axiom: "公理",
     rules: "规则",
@@ -54555,7 +54553,6 @@ const I18N = {
       plate: "图版留白",
       top: "俯视投影",
       detail: "近景细节",
-      section: "地面剖面",
     },
   },
   en: {
@@ -54573,7 +54570,6 @@ const I18N = {
     seed: "Seed",
     coloredBlocks: "Color blocks",
     whiteSkeleton: "White skeleton",
-    groundPlane: "Ground plane",
     autoRotate: "Auto rotate",
     axiom: "Axiom",
     rules: "Rules",
@@ -54599,7 +54595,6 @@ const I18N = {
       plate: "Plate layout",
       top: "Top projection",
       detail: "Detail close-up",
-      section: "Ground section",
     },
   },
 };
@@ -54609,7 +54604,6 @@ const VIEW_MODES = [
   { id: "plate", rotation: { x: -0.52, y: 0.44 }, zoom: 58, offset: -9.2 },
   { id: "top", rotation: { x: -1.36, y: 0.02 }, zoom: 50, offset: -1.6 },
   { id: "detail", rotation: { x: -0.34, y: 0.94 }, zoom: 28, offset: -4.2 },
-  { id: "section", rotation: { x: -0.68, y: 0.58 }, zoom: 42, offset: -5.2 },
 ];
 
 const els = {
@@ -54634,7 +54628,6 @@ const els = {
   langEn: document.querySelector("#langEn"),
   showBlocks: document.querySelector("#showBlocks"),
   showSkeleton: document.querySelector("#showSkeleton"),
-  showGroundPlane: document.querySelector("#showGroundPlane"),
   autoRotate: document.querySelector("#autoRotate"),
   axiom: document.querySelector("#axiom"),
   rules: document.querySelector("#rules"),
@@ -54657,11 +54650,10 @@ let currentGroup = new THREE.Group();
 let modelHolder = new THREE.Group();
 let skeletonMesh = null;
 let blockMesh = null;
-let groundPlaneGroup = null;
 let lastStats = { tokens: 0, segments: 0, blocks: 0, truncated: false };
 let lastPlantCounts = new Array(PLANTS.length).fill(0);
 let language = "zh";
-let activeView = VIEW_MODES.find((view) => view.id === "section") || VIEW_MODES[0];
+let activeView = VIEW_MODES[0];
 let pointerState = null;
 let rotationTarget = { x: -0.45, y: 0.62 };
 let zoomTarget = 46;
@@ -54722,8 +54714,7 @@ function init() {
   });
 
   els.showBlocks.checked = true;
-  els.showSkeleton.checked = false;
-  els.showGroundPlane.checked = true;
+  els.showSkeleton.checked = true;
   els.autoRotate.checked = true;
   applyPreset(activePreset);
   applyViewMode(activeView, false);
@@ -54763,7 +54754,6 @@ function bindEvents() {
   els.rules.addEventListener("change", generate);
   els.showBlocks.addEventListener("change", updateVisibility);
   els.showSkeleton.addEventListener("change", updateVisibility);
-  els.showGroundPlane.addEventListener("change", updateVisibility);
 
   els.randomSeed.addEventListener("click", () => {
     els.seed.value = String(Math.floor(1000 + Math.random() * 89000));
@@ -54956,9 +54946,6 @@ function generate() {
   };
 
   const model = buildModel(expanded.tokens, settings);
-  model.ground = createGroundConfig(model.bounds);
-  splitBlocksAroundGround(model.blocks, model.ground);
-  expandBoundsForGround(model.bounds, model.ground, model.blocks);
   lastStats = {
     tokens: expanded.tokens.length,
     segments: model.segments.length,
@@ -55080,88 +55067,6 @@ function rotateLocal(quat, axis, angle) {
   quat.premultiply(new THREE.Quaternion().setFromAxisAngle(localAxis, angle));
 }
 
-function createGroundConfig(bounds) {
-  const size = new THREE.Vector3();
-  const center = new THREE.Vector3();
-  bounds.getSize(size);
-  bounds.getCenter(center);
-  const width = Math.max(size.x * 1.08, 11);
-  const depth = Math.max(size.z * 2.4, size.x * 0.72, 8.5);
-  return {
-    center,
-    width,
-    depth,
-    thickness: 0.08,
-  };
-}
-
-function splitBlocksAroundGround(blocks, ground) {
-  const groundY = ground.center.y;
-  blocks.forEach((block) => {
-    const side = block.pos.y >= groundY ? 1 : -1;
-    const distance = Math.abs(block.pos.y - groundY);
-    const clearance = 0.52 + block.scale * 1.1;
-    if (distance < clearance) {
-      block.pos.y += side * (clearance - distance);
-    }
-    block.layerSide = side;
-  });
-}
-
-function expandBoundsForGround(bounds, ground, blocks) {
-  blocks.forEach((block) => bounds.expandByPoint(block.pos));
-  const halfW = ground.width * 0.5;
-  const halfD = ground.depth * 0.5;
-  const y = ground.center.y;
-  bounds.expandByPoint(new THREE.Vector3(ground.center.x - halfW, y - ground.thickness, ground.center.z - halfD));
-  bounds.expandByPoint(new THREE.Vector3(ground.center.x + halfW, y + ground.thickness, ground.center.z + halfD));
-}
-
-function createGroundPlane(ground) {
-  const group = new THREE.Group();
-  group.name = "middle-ground-plane";
-  const panel = new THREE.Mesh(
-    new THREE.BoxGeometry(ground.width, ground.thickness, ground.depth),
-    new THREE.MeshBasicMaterial({
-      color: "#e7e6dc",
-      transparent: true,
-      opacity: 0.58,
-      side: THREE.DoubleSide,
-      depthWrite: false,
-    }),
-  );
-  panel.position.copy(ground.center);
-  panel.renderOrder = 5;
-  group.add(panel);
-
-  const lineMaterial = new THREE.LineBasicMaterial({
-    color: "#11131f",
-    transparent: true,
-    opacity: 0.68,
-    depthWrite: false,
-  });
-  const frame = new THREE.LineSegments(
-    new THREE.EdgesGeometry(new THREE.BoxGeometry(ground.width, ground.thickness * 1.12, ground.depth)),
-    lineMaterial,
-  );
-  frame.position.copy(ground.center);
-  frame.renderOrder = 6;
-  group.add(frame);
-
-  const y = ground.center.y + ground.thickness * 0.62;
-  const halfW = ground.width * 0.5;
-  const halfD = ground.depth * 0.5;
-  const gridLines = [
-    [new THREE.Vector3(ground.center.x - halfW, y, ground.center.z), new THREE.Vector3(ground.center.x + halfW, y, ground.center.z)],
-    [new THREE.Vector3(ground.center.x, y, ground.center.z - halfD), new THREE.Vector3(ground.center.x, y, ground.center.z + halfD)],
-  ];
-  const gridGeometry = new THREE.BufferGeometry().setFromPoints(gridLines.flat());
-  const grid = new THREE.LineSegments(gridGeometry, lineMaterial);
-  grid.renderOrder = 6;
-  group.add(grid);
-  return group;
-}
-
 function rebuildScene(model, settings) {
   scene.remove(currentGroup);
   disposeGroup(currentGroup);
@@ -55170,10 +55075,8 @@ function rebuildScene(model, settings) {
   modelHolder.name = "model-holder";
   scene.add(currentGroup);
 
-  groundPlaneGroup = createGroundPlane(model.ground);
   skeletonMesh = createSkeleton(model.segments);
   blockMesh = createBlocks(model.blocks, model.bounds, settings.seed);
-  modelHolder.add(groundPlaneGroup);
   modelHolder.add(skeletonMesh);
   modelHolder.add(blockMesh);
   currentGroup.add(modelHolder);
@@ -55367,7 +55270,6 @@ function createTopographyLayer() {
 function updateVisibility() {
   if (blockMesh) blockMesh.visible = els.showBlocks.checked;
   if (skeletonMesh) skeletonMesh.visible = els.showSkeleton.checked;
-  if (groundPlaneGroup) groundPlaneGroup.visible = els.showGroundPlane.checked;
 }
 
 function updateStats() {
