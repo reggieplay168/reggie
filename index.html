@@ -545,6 +545,11 @@ button.primary {
           <select id="preset"></select>
         </label>
 
+        <label class="field">
+          <span data-i18n="viewMode">视图</span>
+          <select id="viewMode"></select>
+        </label>
+
         <div class="grid-two">
           <label class="field">
             <span data-i18n="iterations">迭代</span>
@@ -54512,6 +54517,7 @@ const I18N = {
     pageTitle: "3D L-System 彩色块生成器",
     title: "彩色树状块",
     algorithm: "算法",
+    viewMode: "视图",
     iterations: "迭代",
     angle: "角度",
     step: "步长",
@@ -54542,11 +54548,18 @@ const I18N = {
       "algo-4": "算法 4 / Fl-Fr 晶簇",
       "algo-5": "算法 5 / L-R 织纹",
     },
+    viewNames: {
+      model: "模型展示",
+      plate: "图版留白",
+      top: "俯视投影",
+      detail: "近景细节",
+    },
   },
   en: {
     pageTitle: "3D L-System Color Block Generator",
     title: "Color Tree Blocks",
     algorithm: "Algorithm",
+    viewMode: "View",
     iterations: "Iterations",
     angle: "Angle",
     step: "Step",
@@ -54577,12 +54590,26 @@ const I18N = {
       "algo-4": "Algorithm 4 / Fl-Fr Crystal Cluster",
       "algo-5": "Algorithm 5 / L-R Weave",
     },
+    viewNames: {
+      model: "Model view",
+      plate: "Plate layout",
+      top: "Top projection",
+      detail: "Detail close-up",
+    },
   },
 };
+
+const VIEW_MODES = [
+  { id: "model", rotation: { x: -0.45, y: 0.62 }, zoom: 46, offset: -5.5 },
+  { id: "plate", rotation: { x: -0.52, y: 0.44 }, zoom: 58, offset: -9.2 },
+  { id: "top", rotation: { x: -1.36, y: 0.02 }, zoom: 50, offset: -1.6 },
+  { id: "detail", rotation: { x: -0.34, y: 0.94 }, zoom: 28, offset: -4.2 },
+];
 
 const els = {
   canvas: document.querySelector("#scene"),
   preset: document.querySelector("#preset"),
+  viewMode: document.querySelector("#viewMode"),
   iterations: document.querySelector("#iterations"),
   iterationsValue: document.querySelector("#iterationsValue"),
   angle: document.querySelector("#angle"),
@@ -54626,6 +54653,7 @@ let blockMesh = null;
 let lastStats = { tokens: 0, segments: 0, blocks: 0, truncated: false };
 let lastPlantCounts = new Array(PLANTS.length).fill(0);
 let language = "zh";
+let activeView = VIEW_MODES[0];
 let pointerState = null;
 let rotationTarget = { x: -0.45, y: 0.62 };
 let zoomTarget = 46;
@@ -54678,10 +54706,18 @@ function init() {
     els.preset.append(option);
   });
 
+  VIEW_MODES.forEach((view) => {
+    const option = document.createElement("option");
+    option.value = view.id;
+    option.textContent = viewLabel(view);
+    els.viewMode.append(option);
+  });
+
   els.showBlocks.checked = true;
   els.showSkeleton.checked = true;
   els.autoRotate.checked = true;
   applyPreset(activePreset);
+  applyViewMode(activeView, false);
   renderPlantStrategy();
   applyLanguage();
   bindEvents();
@@ -54694,6 +54730,10 @@ function bindEvents() {
     activePreset = PRESETS[Number(els.preset.value)];
     applyPreset(activePreset);
     generate();
+  });
+  els.viewMode.addEventListener("change", () => {
+    const nextView = VIEW_MODES.find((view) => view.id === els.viewMode.value) || VIEW_MODES[0];
+    applyViewMode(nextView, true);
   });
   els.langZh.addEventListener("click", () => setLanguage("zh"));
   els.langEn.addEventListener("click", () => setLanguage("en"));
@@ -54747,6 +54787,15 @@ function applyPreset(preset) {
   syncOutputs();
 }
 
+function applyViewMode(view, immediate) {
+  activeView = view;
+  els.viewMode.value = view.id;
+  rotationTarget = { ...view.rotation };
+  zoomTarget = view.zoom;
+  applyViewOffset();
+  if (immediate) els.autoRotate.checked = false;
+}
+
 function setLanguage(nextLanguage) {
   if (!I18N[nextLanguage] || nextLanguage === language) return;
   language = nextLanguage;
@@ -54770,6 +54819,7 @@ function applyLanguage() {
   els.langZh.classList.toggle("active", language === "zh");
   els.langEn.classList.toggle("active", language === "en");
   refreshPresetLabels();
+  refreshViewLabels();
   renderPlantStrategy();
   updateStats();
 }
@@ -54782,6 +54832,17 @@ function refreshPresetLabels() {
 
 function presetLabel(preset) {
   return I18N[language].presetNames[preset.id] || preset.name;
+}
+
+function refreshViewLabels() {
+  [...els.viewMode.options].forEach((option) => {
+    const view = VIEW_MODES.find((item) => item.id === option.value);
+    option.textContent = view ? viewLabel(view) : option.value;
+  });
+}
+
+function viewLabel(view) {
+  return I18N[language].viewNames[view.id] || view.id;
 }
 
 function syncOutputs() {
@@ -55299,15 +55360,18 @@ function frameModel(bounds) {
   const largest = Math.max(size.x, size.y, size.z, 1);
   const scale = THREE.MathUtils.clamp(23 / largest, 0.45, 5.2);
   modelHolder.position.set(-center.x, -center.y, -center.z);
-  currentGroup.position.x = window.innerWidth > 760 ? -5.5 : 0;
-  currentGroup.position.y = 0;
-  currentGroup.position.z = 0;
+  applyViewOffset();
   currentGroup.scale.setScalar(scale);
 }
 
 function resetCamera() {
-  rotationTarget = { x: -0.45, y: 0.62 };
-  zoomTarget = 46;
+  applyViewMode(activeView, false);
+}
+
+function applyViewOffset() {
+  currentGroup.position.x = window.innerWidth > 760 ? activeView.offset : 0;
+  currentGroup.position.y = activeView.id === "top" ? -1.5 : 0;
+  currentGroup.position.z = 0;
 }
 
 function animate() {
@@ -55328,6 +55392,7 @@ function resize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
+  applyViewOffset();
 }
 
 function onPointerDown(event) {
