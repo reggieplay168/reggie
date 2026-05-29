@@ -306,6 +306,79 @@ button.primary {
   border-top: 1px solid rgba(17, 19, 31, 0.12);
 }
 
+.site-concept {
+  margin-top: 14px;
+  padding: 12px;
+  color: #141824;
+  background:
+    linear-gradient(135deg, rgba(114, 227, 238, 0.18), transparent 52%),
+    rgba(255, 255, 255, 0.34);
+  border: 1px solid rgba(36, 39, 48, 0.13);
+  border-radius: 8px;
+}
+
+.site-concept p {
+  margin: 0 0 10px;
+  color: #505967;
+  font-size: 0.76rem;
+  line-height: 1.42;
+}
+
+.site-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.site-metrics div {
+  min-width: 0;
+  padding: 7px;
+  background: rgba(17, 19, 31, 0.08);
+  border-radius: 7px;
+}
+
+.site-metrics span,
+.layer-key span {
+  display: block;
+  overflow: hidden;
+  color: #687180;
+  font-size: 0.64rem;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.site-metrics strong {
+  display: block;
+  margin-top: 3px;
+  color: #11131f;
+  font-size: 0.83rem;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.layer-key {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.layer-key div {
+  padding: 7px;
+  border-left: 3px solid var(--layer-color);
+  background: rgba(255, 255, 255, 0.34);
+  border-radius: 6px;
+}
+
+.layer-key strong {
+  display: block;
+  margin-top: 2px;
+  color: #151824;
+  font-size: 0.7rem;
+  line-height: 1.16;
+}
+
 .strategy-head {
   display: flex;
   align-items: center;
@@ -603,6 +676,9 @@ button.primary {
         <div class="toggles">
           <label><input id="showBlocks" type="checkbox" /> <span data-i18n="coloredBlocks">彩色块</span></label>
           <label><input id="showSkeleton" type="checkbox" /> <span data-i18n="whiteSkeleton">白色骨架</span></label>
+          <label><input id="showSiteSurface" type="checkbox" /> <span data-i18n="siteSurface">场地地表</span></label>
+          <label><input id="showRoots" type="checkbox" /> <span data-i18n="rootLayer">地下根系</span></label>
+          <label><input id="showSiphon" type="checkbox" /> <span data-i18n="siphonLayer">虹吸水路</span></label>
           <label><input id="autoRotate" type="checkbox" /> <span data-i18n="autoRotate">自动旋转</span></label>
         </div>
 
@@ -637,6 +713,31 @@ button.primary {
           </div>
         </dl>
 
+        <section class="site-concept" aria-label="Dagenham Dock remediation layers">
+          <div class="strategy-head">
+            <h2 data-i18n="siteConceptTitle">Dagenham 三层修复模型</h2>
+            <span id="siteSummary">1.5万 cells</span>
+          </div>
+          <p data-i18n="siteConceptText">
+            CSV 风险网格驱动地下根系、地表修复皮肤与地上错落方格；色块不再只是装饰，而是污染物、植物与时间反馈的空间节点。
+          </p>
+          <div id="siteMetrics" class="site-metrics"></div>
+          <div class="layer-key">
+            <div style="--layer-color:#79d7c8">
+              <span data-i18n="belowLayer">地下</span>
+              <strong data-i18n="belowLayerText">深根 / 金属 / 地下水</strong>
+            </div>
+            <div style="--layer-color:#f4df4e">
+              <span data-i18n="surfaceLayer">地表</span>
+              <strong data-i18n="surfaceLayerText">菌丝皮肤 / 覆盖 / 封存</strong>
+            </div>
+            <div style="--layer-color:#ff73a9">
+              <span data-i18n="aboveLayer">地上</span>
+              <strong data-i18n="aboveLayerText">错落色块 / 生物量</strong>
+            </div>
+          </div>
+        </section>
+
         <section class="plant-strategy" aria-label="Plant color strategy">
           <div class="strategy-head">
             <h2 data-i18n="plantStrategy">植物色块策略</h2>
@@ -654,6 +755,7 @@ button.primary {
       </div>
     </main>
 
+    <script src="./site-data-global.js"></script>
     <script>
 /**
  * @license
@@ -54528,6 +54630,9 @@ const I18N = {
     seed: "随机种子",
     coloredBlocks: "彩色块",
     whiteSkeleton: "白色骨架",
+    siteSurface: "场地地表",
+    rootLayer: "地下根系",
+    siphonLayer: "虹吸水路",
     autoRotate: "自动旋转",
     axiom: "公理",
     rules: "规则",
@@ -54538,6 +54643,18 @@ const I18N = {
     skeleton: "骨架",
     blocks: "色块",
     plantStrategy: "植物色块策略",
+    siteConceptTitle: "Dagenham 三层修复模型",
+    siteConceptText:
+      "CSV 风险网格驱动地下根系、地表修复皮肤与地上错落方格；色块不再只是装饰，而是污染物、植物与时间反馈的空间节点。",
+    belowLayer: "地下",
+    belowLayerText: "深根 / 金属 / 地下水",
+    surfaceLayer: "地表",
+    surfaceLayerText: "菌丝皮肤 / 覆盖 / 封存",
+    aboveLayer: "地上",
+    aboveLayerText: "错落色块 / 生物量",
+    siteCells: "网格",
+    maxRisk: "最高风险",
+    mainPollutant: "主导风险",
     resetCamera: "重置视角",
     speciesActive: (active, total) => `${active}/${total} 种出现`,
     generation: (gen, ind, truncated) => `Gen: ${gen}  Ind: ${ind}${truncated ? "  / 已限幅" : ""}`,
@@ -54553,6 +54670,8 @@ const I18N = {
       plate: "图版留白",
       top: "俯视投影",
       detail: "近景细节",
+      site: "场地嵌入",
+      section: "三层剖面",
     },
   },
   en: {
@@ -54570,6 +54689,9 @@ const I18N = {
     seed: "Seed",
     coloredBlocks: "Color blocks",
     whiteSkeleton: "White skeleton",
+    siteSurface: "Site surface",
+    rootLayer: "Root layer",
+    siphonLayer: "Siphon lines",
     autoRotate: "Auto rotate",
     axiom: "Axiom",
     rules: "Rules",
@@ -54580,6 +54702,18 @@ const I18N = {
     skeleton: "Skeleton",
     blocks: "Blocks",
     plantStrategy: "Plant Block Strategy",
+    siteConceptTitle: "Dagenham Three-Layer Remediation",
+    siteConceptText:
+      "The CSV risk grid drives deep roots, a surface remediation skin, and staggered above-ground blocks; each color block becomes a node between pollutant, plant, and time feedback.",
+    belowLayer: "Below ground",
+    belowLayerText: "Deep root / metals / groundwater",
+    surfaceLayer: "Surface",
+    surfaceLayerText: "Mycelium skin / cap / stabilize",
+    aboveLayer: "Above ground",
+    aboveLayerText: "Staggered blocks / biomass",
+    siteCells: "Cells",
+    maxRisk: "Max risk",
+    mainPollutant: "Main risk",
     resetCamera: "Reset camera",
     speciesActive: (active, total) => `${active}/${total} species active`,
     generation: (gen, ind, truncated) => `Gen: ${gen}  Ind: ${ind}${truncated ? "  / capped" : ""}`,
@@ -54595,6 +54729,8 @@ const I18N = {
       plate: "Plate layout",
       top: "Top projection",
       detail: "Detail close-up",
+      site: "Site embedded",
+      section: "Three-layer section",
     },
   },
 };
@@ -54604,6 +54740,8 @@ const VIEW_MODES = [
   { id: "plate", rotation: { x: -0.52, y: 0.44 }, zoom: 58, offset: -9.2 },
   { id: "top", rotation: { x: -1.36, y: 0.02 }, zoom: 50, offset: -1.6 },
   { id: "detail", rotation: { x: -0.34, y: 0.94 }, zoom: 28, offset: -4.2 },
+  { id: "site", rotation: { x: -0.68, y: 0.56 }, zoom: 64, offset: -4.8 },
+  { id: "section", rotation: { x: -0.2, y: 0.82 }, zoom: 52, offset: -6.4 },
 ];
 
 const els = {
@@ -54628,6 +54766,9 @@ const els = {
   langEn: document.querySelector("#langEn"),
   showBlocks: document.querySelector("#showBlocks"),
   showSkeleton: document.querySelector("#showSkeleton"),
+  showSiteSurface: document.querySelector("#showSiteSurface"),
+  showRoots: document.querySelector("#showRoots"),
+  showSiphon: document.querySelector("#showSiphon"),
   autoRotate: document.querySelector("#autoRotate"),
   axiom: document.querySelector("#axiom"),
   rules: document.querySelector("#rules"),
@@ -54638,6 +54779,8 @@ const els = {
   tokenCount: document.querySelector("#tokenCount"),
   segmentCount: document.querySelector("#segmentCount"),
   blockCount: document.querySelector("#blockCount"),
+  siteSummary: document.querySelector("#siteSummary"),
+  siteMetrics: document.querySelector("#siteMetrics"),
   plantSummary: document.querySelector("#plantSummary"),
   plantLegend: document.querySelector("#plantLegend"),
   plantRuler: document.querySelector("#plantRuler"),
@@ -54650,6 +54793,9 @@ let currentGroup = new THREE.Group();
 let modelHolder = new THREE.Group();
 let skeletonMesh = null;
 let blockMesh = null;
+let siteSurfaceGroup = null;
+let rootSystemGroup = null;
+let siphonSystemGroup = null;
 let lastStats = { tokens: 0, segments: 0, blocks: 0, truncated: false };
 let lastPlantCounts = new Array(PLANTS.length).fill(0);
 let language = "zh";
@@ -54657,6 +54803,62 @@ let activeView = VIEW_MODES[0];
 let pointerState = null;
 let rotationTarget = { x: -0.45, y: 0.62 };
 let zoomTarget = 46;
+
+const SITE_DATA_READY = Array.isArray(window.SITE_CELLS) && window.SITE_CELLS.length > 0;
+const SITE_CELL = {
+  x: 0,
+  y: 1,
+  risk: 2,
+  hydrocarbon: 3,
+  metals: 4,
+  asbestos: 5,
+  water: 6,
+  gas: 7,
+  confidence: 8,
+  strategy: 9,
+  rawStrategy: 10,
+  family: 11,
+  riskClass: 12,
+  evidence: 13,
+};
+const SITE_SCALE = 14.5;
+const SITE_CELL_WORLD = SITE_DATA_READY ? window.SITE_SUMMARY.cellSizeMeters / SITE_SCALE : 0.34;
+const SITE_CENTER = SITE_DATA_READY
+  ? {
+      x: (window.SITE_SUMMARY.bounds.xMin + window.SITE_SUMMARY.bounds.xMax) / 2,
+      y: (window.SITE_SUMMARY.bounds.yMin + window.SITE_SUMMARY.bounds.yMax) / 2,
+    }
+  : { x: 0, y: 0 };
+const FAMILY_COLORS = {
+  hydrocarbon: "#ff9b84",
+  metals: "#a7ffcb",
+  "asbestos/rubble": "#d8c7d6",
+  "water mobility": "#79d7c8",
+  "ground gas": "#ffd2dc",
+};
+const FAMILY_CN = {
+  hydrocarbon: "烃类",
+  metals: "重金属",
+  "asbestos/rubble": "石棉/碎石",
+  "water mobility": "水迁移",
+  "ground gas": "地气",
+};
+const SITE_PLANT_GROUPS = {
+  hydrocarbon: ["buddleja", "miscanthus", "panicum", "salix", "phalaris"],
+  metals: ["populus", "salix", "helianthus", "nicotiana", "cannabis", "linum", "agrostis"],
+  "asbestos/rubble": ["festuca", "lolium", "agrostis", "buddleja", "betula"],
+  "water mobility": ["salix", "phalaris", "panicum", "chrysopogon", "arundo"],
+  "ground gas": ["agrostis", "festuca", "miscanthus", "urtica"],
+};
+const PLANT_INDEX_BY_KEY = new Map(PLANTS.map((plant, index) => [plant.key, index]));
+const SITE_CELLS_HYDRATED = SITE_DATA_READY ? window.SITE_CELLS.map(hydrateSiteCell) : [];
+const SITE_HOTSPOTS = SITE_CELLS_HYDRATED.slice()
+  .sort((a, b) => siteHotspotScore(b) - siteHotspotScore(a))
+  .slice(0, 1600);
+const SITE_FAMILY_COUNTS = SITE_CELLS_HYDRATED.reduce((acc, cell) => {
+  acc[cell.family] = (acc[cell.family] || 0) + 1;
+  return acc;
+}, {});
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color("#07112a");
@@ -54715,6 +54917,9 @@ function init() {
 
   els.showBlocks.checked = true;
   els.showSkeleton.checked = true;
+  els.showSiteSurface.checked = true;
+  els.showRoots.checked = true;
+  els.showSiphon.checked = true;
   els.autoRotate.checked = true;
   applyPreset(activePreset);
   applyViewMode(activeView, false);
@@ -54754,6 +54959,9 @@ function bindEvents() {
   els.rules.addEventListener("change", generate);
   els.showBlocks.addEventListener("change", updateVisibility);
   els.showSkeleton.addEventListener("change", updateVisibility);
+  els.showSiteSurface.addEventListener("change", updateVisibility);
+  els.showRoots.addEventListener("change", updateVisibility);
+  els.showSiphon.addEventListener("change", updateVisibility);
 
   els.randomSeed.addEventListener("click", () => {
     els.seed.value = String(Math.floor(1000 + Math.random() * 89000));
@@ -54820,6 +55028,7 @@ function applyLanguage() {
   els.langEn.classList.toggle("active", language === "en");
   refreshPresetLabels();
   refreshViewLabels();
+  renderSiteDashboard();
   renderPlantStrategy();
   updateStats();
 }
@@ -54946,6 +55155,8 @@ function generate() {
   };
 
   const model = buildModel(expanded.tokens, settings);
+  const siteLayers = SITE_DATA_READY ? buildSiteRemediationLayers(model.bounds, settings) : null;
+  if (siteLayers) model.bounds.union(siteLayers.bounds);
   lastStats = {
     tokens: expanded.tokens.length,
     segments: model.segments.length,
@@ -54953,7 +55164,7 @@ function generate() {
     truncated: expanded.truncated || model.truncated,
   };
 
-  rebuildScene(model, settings);
+  rebuildScene(model, settings, siteLayers);
   updateStats();
   updateVisibility();
   frameModel(model.bounds);
@@ -55003,6 +55214,7 @@ function buildModel(tokens, settings) {
           dir: end.clone().sub(start).normalize(),
           depth: state.depth,
           index: drawIndex,
+          siteCell: siteCellForBlock(drawIndex, settings.seed, branchRatio),
           scale:
             settings.blockSize *
             (0.95 + random() * 1.15 + branchRatio * 0.56) *
@@ -55067,7 +55279,225 @@ function rotateLocal(quat, axis, angle) {
   quat.premultiply(new THREE.Quaternion().setFromAxisAngle(localAxis, angle));
 }
 
-function rebuildScene(model, settings) {
+function hydrateSiteCell(row, index) {
+  const family = window.FAMILY_KEYS?.[row[SITE_CELL.family]] || dominantFamilyFromRow(row);
+  const noise = fract(Math.sin(row[SITE_CELL.x] * 0.071 + row[SITE_CELL.y] * 0.117) * 173.41);
+  const terrain = THREE.MathUtils.clamp(
+    -0.08 + row[SITE_CELL.water] * 0.28 + row[SITE_CELL.risk] * 0.32 + row[SITE_CELL.gas] * 0.16 + noise * 0.13,
+    -0.08,
+    0.62,
+  );
+
+  return {
+    index,
+    x: (row[SITE_CELL.x] - SITE_CENTER.x) / SITE_SCALE,
+    z: -(row[SITE_CELL.y] - SITE_CENTER.y) / SITE_SCALE,
+    siteX: row[SITE_CELL.x],
+    siteY: row[SITE_CELL.y],
+    risk: row[SITE_CELL.risk],
+    hydrocarbon: row[SITE_CELL.hydrocarbon],
+    metals: row[SITE_CELL.metals],
+    asbestos: row[SITE_CELL.asbestos],
+    water: row[SITE_CELL.water],
+    gas: row[SITE_CELL.gas],
+    confidence: row[SITE_CELL.confidence],
+    family,
+    terrain,
+  };
+}
+
+function dominantFamilyFromRow(row) {
+  const values = [
+    ["hydrocarbon", row[SITE_CELL.hydrocarbon]],
+    ["metals", row[SITE_CELL.metals]],
+    ["asbestos/rubble", row[SITE_CELL.asbestos]],
+    ["water mobility", row[SITE_CELL.water]],
+    ["ground gas", row[SITE_CELL.gas]],
+  ];
+  return values.sort((a, b) => b[1] - a[1])[0][0];
+}
+
+function siteHotspotScore(cell) {
+  return (
+    cell.risk * 0.95 +
+    cell.water * 0.42 +
+    cell.metals * 0.38 +
+    cell.hydrocarbon * 0.34 +
+    cell.asbestos * 0.3 +
+    cell.gas * 0.22 +
+    cell.confidence * 0.12
+  );
+}
+
+function siteCellForBlock(index, seed, branchRatio) {
+  if (!SITE_HOTSPOTS.length) return null;
+  const stride = 37 + Math.floor(branchRatio * 19);
+  const hotspotIndex = Math.abs((index * stride + seed * 11) % SITE_HOTSPOTS.length);
+  return SITE_HOTSPOTS[hotspotIndex];
+}
+
+function buildSiteRemediationLayers(modelBounds, settings) {
+  const surfaceY = (Number.isFinite(modelBounds.min.y) ? modelBounds.min.y : 0) - 1.15;
+  const group = new THREE.Group();
+  group.name = "dagenham-remediation-layers";
+  const bounds = new THREE.Box3();
+  const surface = createContaminationSurface(surfaceY, bounds);
+  const roots = createUndergroundRootSystem(surfaceY, settings, bounds);
+  const siphons = createSiphonNetwork(surfaceY, settings, bounds);
+
+  group.add(surface, roots, siphons);
+  return { group, surface, roots, siphons, bounds };
+}
+
+function createContaminationSurface(surfaceY, bounds) {
+  const group = new THREE.Group();
+  group.name = "surface-remediation-skin";
+  const geometry = new THREE.BoxGeometry(1, 1, 1);
+  const matrix = new THREE.Matrix4();
+  const quat = new THREE.Quaternion();
+  const scale = new THREE.Vector3();
+
+  Object.keys(FAMILY_COLORS).forEach((family) => {
+    const cells = SITE_CELLS_HYDRATED.filter((cell) => cell.family === family);
+    if (!cells.length) return;
+
+    const material = new THREE.MeshBasicMaterial({
+      color: FAMILY_COLORS[family],
+      transparent: true,
+      opacity: family === "water mobility" ? 0.34 : 0.28,
+      depthWrite: false,
+    });
+    const mesh = new THREE.InstancedMesh(geometry, material, cells.length);
+
+    cells.forEach((cell, index) => {
+      const tileHeight = 0.035 + cell.risk * 0.28 + Math.max(cell.hydrocarbon, cell.metals) * 0.06;
+      scale.set(SITE_CELL_WORLD * 0.9, tileHeight, SITE_CELL_WORLD * 0.9);
+      const pos = new THREE.Vector3(cell.x, surfaceY + cell.terrain + tileHeight * 0.5, cell.z);
+      matrix.compose(pos, quat, scale);
+      mesh.setMatrixAt(index, matrix);
+      bounds.expandByPoint(new THREE.Vector3(cell.x, surfaceY + cell.terrain + tileHeight, cell.z));
+      bounds.expandByPoint(new THREE.Vector3(cell.x, surfaceY - 0.12, cell.z));
+    });
+
+    mesh.instanceMatrix.needsUpdate = true;
+    group.add(mesh);
+  });
+
+  group.add(createSiteFrame(surfaceY, bounds));
+  return group;
+}
+
+function createSiteFrame(surfaceY, bounds) {
+  const group = new THREE.Group();
+  const width = (window.SITE_SUMMARY.bounds.xMax - window.SITE_SUMMARY.bounds.xMin) / SITE_SCALE;
+  const depth = (window.SITE_SUMMARY.bounds.yMax - window.SITE_SUMMARY.bounds.yMin) / SITE_SCALE;
+  const frameMaterial = new THREE.LineBasicMaterial({ color: "#8df7ff", transparent: true, opacity: 0.42 });
+  const frame = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(width, 0.12, depth)), frameMaterial);
+  frame.position.y = surfaceY + 0.08;
+  group.add(frame);
+
+  const contourMaterial = new THREE.LineBasicMaterial({ color: "#18d98c", transparent: true, opacity: 0.16 });
+  for (let ring = 0; ring < 18; ring += 1) {
+    const points = [];
+    const rx = width * (0.13 + (ring % 7) * 0.038);
+    const rz = depth * (0.09 + (ring % 8) * 0.032);
+    const cx = -width * 0.36 + ((ring * 17) % 72) * 0.01 * width;
+    const cz = -depth * 0.36 + ((ring * 23) % 72) * 0.01 * depth;
+    for (let i = 0; i <= 72; i += 1) {
+      const a = (i / 72) * Math.PI * 2;
+      const wobble = 1 + Math.sin(a * 3 + ring) * 0.1 + Math.cos(a * 5) * 0.06;
+      points.push(new THREE.Vector3(cx + Math.cos(a) * rx * wobble, surfaceY + 0.14, cz + Math.sin(a) * rz * wobble));
+    }
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), contourMaterial));
+  }
+
+  bounds.expandByPoint(new THREE.Vector3(-width * 0.5, surfaceY - 4.8, -depth * 0.5));
+  bounds.expandByPoint(new THREE.Vector3(width * 0.5, surfaceY + 2.8, depth * 0.5));
+  return group;
+}
+
+function createUndergroundRootSystem(surfaceY, settings, bounds) {
+  const group = new THREE.Group();
+  group.name = "below-ground-root-network";
+  const positions = [];
+  const colors = [];
+  const rootCandidates = SITE_HOTSPOTS.filter((cell) => cell.metals + cell.water + cell.risk > 0.74).slice(0, 620);
+
+  rootCandidates.forEach((cell, index) => {
+    const random = mulberry32(settings.seed + cell.index * 13 + index * 97);
+    const start = new THREE.Vector3(cell.x, surfaceY + cell.terrain + 0.08, cell.z);
+    const depth = 0.85 + cell.metals * 4.2 + cell.water * 2.2 + cell.risk * 1.35;
+    const branches = 1 + Math.floor(random() * 3);
+    const color = new THREE.Color(cell.metals >= cell.water ? "#caff75" : "#72e3ee");
+
+    for (let branch = 0; branch < branches; branch += 1) {
+      const spread = 0.18 + random() * 0.72 + cell.asbestos * 0.4;
+      const mid = new THREE.Vector3(
+        start.x + (random() - 0.5) * spread,
+        start.y - depth * (0.42 + random() * 0.24),
+        start.z + (random() - 0.5) * spread,
+      );
+      const end = new THREE.Vector3(
+        start.x + (random() - 0.5) * spread * 2.1,
+        start.y - depth,
+        start.z + (random() - 0.5) * spread * 2.1,
+      );
+      pushColoredSegment(positions, colors, start, mid, color);
+      pushColoredSegment(positions, colors, mid, end, color);
+      bounds.expandByPoint(end);
+    }
+  });
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+  group.add(
+    new THREE.LineSegments(
+      geometry,
+      new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.72 }),
+    ),
+  );
+  return group;
+}
+
+function createSiphonNetwork(surfaceY, settings, bounds) {
+  const group = new THREE.Group();
+  group.name = "siphon-water-routing";
+  const positions = [];
+  const colors = [];
+  const waterCells = SITE_HOTSPOTS.filter((cell) => cell.water + cell.risk > 0.7).slice(0, 180);
+  const color = new THREE.Color("#9ffcff");
+
+  waterCells.forEach((cell, index) => {
+    const target = waterCells[(index * 11 + settings.seed) % waterCells.length];
+    if (!target || target === cell) return;
+    const lift = 0.95 + (cell.water + target.water) * 1.6 + cell.risk * 0.8;
+    const a = new THREE.Vector3(cell.x, surfaceY + cell.terrain + 0.22, cell.z);
+    const b = new THREE.Vector3((cell.x + target.x) * 0.5, surfaceY + lift, (cell.z + target.z) * 0.5);
+    const c = new THREE.Vector3(target.x, surfaceY + target.terrain + 0.22, target.z);
+    pushColoredSegment(positions, colors, a, b, color);
+    pushColoredSegment(positions, colors, b, c, color);
+    bounds.expandByPoint(b);
+  });
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+  group.add(
+    new THREE.LineSegments(
+      geometry,
+      new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.62 }),
+    ),
+  );
+  return group;
+}
+
+function pushColoredSegment(positions, colors, a, b, color) {
+  positions.push(a.x, a.y, a.z, b.x, b.y, b.z);
+  colors.push(color.r, color.g, color.b, color.r, color.g, color.b);
+}
+
+function rebuildScene(model, settings, siteLayers) {
   scene.remove(currentGroup);
   disposeGroup(currentGroup);
   currentGroup = new THREE.Group();
@@ -55075,8 +55505,12 @@ function rebuildScene(model, settings) {
   modelHolder.name = "model-holder";
   scene.add(currentGroup);
 
+  siteSurfaceGroup = siteLayers?.surface || null;
+  rootSystemGroup = siteLayers?.roots || null;
+  siphonSystemGroup = siteLayers?.siphons || null;
   skeletonMesh = createSkeleton(model.segments);
   blockMesh = createBlocks(model.blocks, model.bounds, settings.seed);
+  if (siteLayers) modelHolder.add(siteLayers.group);
   modelHolder.add(skeletonMesh);
   modelHolder.add(blockMesh);
   currentGroup.add(modelHolder);
@@ -55153,10 +55587,11 @@ function createBlocks(blocks, bounds, seed) {
     bucket.forEach((block, index) => {
       quat.setFromUnitVectors(up, block.dir.lengthSq() > 0 ? block.dir : up);
       quat.multiply(new THREE.Quaternion().setFromAxisAngle(up, block.spin));
+      const pollutionLift = block.siteCell ? 0.88 + block.siteCell.risk * 1.08 + block.siteCell.water * 0.22 : 1;
       size.set(
-        block.scale * visualSize.x * (0.86 + block.hueShift * 0.36),
-        block.scale * visualSize.y * (0.9 + block.hueShift * 0.2),
-        block.scale * visualSize.z * (0.84 + block.hueShift * 0.34),
+        block.scale * visualSize.x * (0.86 + block.hueShift * 0.36) * pollutionLift,
+        block.scale * visualSize.y * (0.9 + block.hueShift * 0.2) * (0.9 + pollutionLift * 0.32),
+        block.scale * visualSize.z * (0.84 + block.hueShift * 0.34) * pollutionLift,
       );
       matrix.compose(block.pos, quat, size);
       mesh.setMatrixAt(index, matrix);
@@ -55179,7 +55614,16 @@ function choosePlantIndex(block, heightRatio, seed) {
   const roll = (block.hueShift * 0.72 + salt * 0.28) % 1;
   let choices;
 
-  if (heightRatio > 0.78) {
+  if (block.siteCell) {
+    const keyedChoices = SITE_PLANT_GROUPS[block.siteCell.family] || [];
+    choices = keyedChoices.map((key) => PLANT_INDEX_BY_KEY.get(key)).filter(Number.isInteger);
+    if (heightRatio > 0.76 && block.siteCell.risk > 0.28) {
+      choices = choices.concat(PLANT_GROUPS.upper);
+    } else if (heightRatio < 0.24) {
+      choices = choices.concat(PLANT_GROUPS.lower);
+    }
+    if (!choices.length) choices = PLANT_GROUPS.middle;
+  } else if (heightRatio > 0.78) {
     choices = PLANT_GROUPS.upper;
   } else if (heightRatio < 0.24) {
     choices = PLANT_GROUPS.lower;
@@ -55189,7 +55633,7 @@ function choosePlantIndex(block, heightRatio, seed) {
     choices = PLANT_GROUPS.middle;
   }
 
-  return choices[Math.min(choices.length - 1, Math.floor(roll * choices.length))];
+  return choices[Math.min(choices.length - 1, Math.floor(roll * choices.length))] ?? 0;
 }
 
 function plantVisualSize(plant) {
@@ -55270,6 +55714,9 @@ function createTopographyLayer() {
 function updateVisibility() {
   if (blockMesh) blockMesh.visible = els.showBlocks.checked;
   if (skeletonMesh) skeletonMesh.visible = els.showSkeleton.checked;
+  if (siteSurfaceGroup) siteSurfaceGroup.visible = els.showSiteSurface.checked;
+  if (rootSystemGroup) rootSystemGroup.visible = els.showRoots.checked;
+  if (siphonSystemGroup) siphonSystemGroup.visible = els.showSiphon.checked;
 }
 
 function updateStats() {
@@ -55282,7 +55729,35 @@ function updateStats() {
     String(els.seed.value).slice(-2).padStart(2, "0"),
     lastStats.truncated,
   );
+  renderSiteDashboard();
   updatePlantCounts();
+}
+
+function renderSiteDashboard() {
+  if (!els.siteSummary || !els.siteMetrics) return;
+  if (!SITE_DATA_READY) {
+    els.siteSummary.textContent = language === "zh" ? "未载入数据" : "No data";
+    els.siteMetrics.replaceChildren();
+    return;
+  }
+
+  const dominant = Object.entries(SITE_FAMILY_COUNTS).sort((a, b) => b[1] - a[1])[0]?.[0] || "water mobility";
+  const count = window.SITE_SUMMARY.count;
+  const maxRisk = window.SITE_SUMMARY.bounds.riskMax;
+  els.siteSummary.textContent = `${compactNumber(count)} cells`;
+  els.siteMetrics.innerHTML = [
+    siteMetric(I18N[language].siteCells, compactNumber(count)),
+    siteMetric(I18N[language].maxRisk, maxRisk.toFixed(2)),
+    siteMetric(I18N[language].mainPollutant, familyLabel(dominant)),
+  ].join("");
+}
+
+function siteMetric(labelText, value) {
+  return `<div><span>${labelText}</span><strong>${value}</strong></div>`;
+}
+
+function familyLabel(family) {
+  return language === "zh" ? FAMILY_CN[family] || family : family;
 }
 
 function renderPlantStrategy() {
