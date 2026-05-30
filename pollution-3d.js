@@ -6,47 +6,47 @@ const FIELD_INFO = {
     index: 2,
     zh: "总风险",
     en: "Total risk",
-    ramp: ["#2ea66f", "#d6d356", "#ef8846", "#c73555"],
+    ramp: ["#67d9ff", "#72ef76", "#fff15f", "#ff9772", "#ff5ea9", "#a974ff"],
   },
   hydrocarbon: {
     index: 3,
     zh: "烃类",
     en: "Hydrocarbon",
-    ramp: ["#36c7a1", "#d5d24f", "#ed7b45", "#bd3850"],
+    ramp: ["#54e0d6", "#9bf36a", "#ffe06a", "#ff8b63", "#ff609b", "#b876ff"],
   },
   metals: {
     index: 4,
     zh: "重金属",
     en: "Metals",
-    ramp: ["#52d6e8", "#85e66c", "#e1d64c", "#ff705d"],
+    ramp: ["#79f4ff", "#6eff86", "#d6ff64", "#ffe65b", "#ff7871", "#d66dff"],
   },
   asbestos_rubble: {
     index: 5,
     zh: "石棉/瓦砾",
     en: "Asbestos / rubble",
-    ramp: ["#8f96a8", "#c2b6d8", "#f0a3b3", "#e05b71"],
+    ramp: ["#c9dcff", "#a7f2d4", "#e4f66c", "#ffa66f", "#ff6fb0", "#b77eff"],
   },
   water_mobility: {
     index: 6,
     zh: "水迁移",
     en: "Water mobility",
-    ramp: ["#2d80c8", "#55d8e4", "#a8ef75", "#f4d650"],
+    ramp: ["#5b8eff", "#58e1ff", "#6dffc8", "#a2ff6a", "#ffe763", "#ff8fd5"],
   },
   ground_gas: {
     index: 7,
     zh: "地下气",
     en: "Ground gas",
-    ramp: ["#6d72dd", "#ba6eee", "#ff6da8", "#ff7656"],
+    ramp: ["#7a7cff", "#a76cff", "#e569ff", "#ff62ae", "#ff8062", "#fff15f"],
   },
   confidence: {
     index: 8,
     zh: "证据置信",
     en: "Confidence",
-    ramp: ["#5e7ed9", "#70dae5", "#f1df68", "#ffffff"],
+    ramp: ["#7b8dff", "#64e5ff", "#8cff8c", "#ffe96a", "#ff9a70", "#fff6d8"],
   },
 };
 
-const FAMILY_COLORS = ["#f18463", "#89ea61", "#c9c3d7", "#67d6ee", "#ff6f9e", "#f2e676"];
+const FAMILY_COLORS = ["#ff8b63", "#7af071", "#c8c5ff", "#6fe9ff", "#ff62ae", "#f2e676"];
 const FIELD_KEYS = Object.keys(FIELD_INFO);
 const METER_TO_WORLD = 0.058;
 const CELL_WORLD = POLLUTION_META.cellSizeMeters * METER_TO_WORLD;
@@ -128,10 +128,12 @@ buildSiteGrid();
 const blockGeometry = new THREE.BoxGeometry(1, 1, 1);
 const blockMaterial = new THREE.MeshStandardMaterial({
   vertexColors: true,
-  roughness: 0.54,
+  roughness: 0.43,
   metalness: 0.03,
   transparent: true,
-  opacity: 0.88,
+  opacity: 0.96,
+  emissive: 0x071021,
+  emissiveIntensity: 0.16,
 });
 
 const blockMesh = new THREE.InstancedMesh(blockGeometry, blockMaterial, POLLUTION_CELLS.length);
@@ -228,7 +230,7 @@ function updateBlocks() {
     const height = 0.07 + Math.pow(n, 1.18) * heightScale;
     const x = (cell[0] - centerX) * METER_TO_WORLD;
     const z = -(cell[1] - centerY) * METER_TO_WORLD;
-    const footprint = CELL_WORLD * 0.86;
+    const footprint = CELL_WORLD * 0.74;
     const riskClassIndex = cell[10];
     const familyIndex = cell[9];
 
@@ -242,6 +244,8 @@ function updateBlocks() {
       colorOut.set(FAMILY_COLORS[familyIndex] || FAMILY_COLORS[5]);
     } else {
       colorFromRamp(n, field.ramp);
+      colorOut.lerp(colorA.set(FAMILY_COLORS[familyIndex] || FAMILY_COLORS[5]), 0.18);
+      colorOut.offsetHSL(0, 0.08, n > 0.62 ? 0.04 : 0);
     }
     blockMesh.setColorAt(active, colorOut);
     activeSourceIndices.push(sourceIndex);
